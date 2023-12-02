@@ -145,7 +145,6 @@ describe("day1", () => {
     test("real data", () => {
       const res = day1(testData1);
 
-      console.log(res);
       expect(res).toBe(54667);
     });
   });
