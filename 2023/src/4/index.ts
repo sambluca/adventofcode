@@ -30,10 +30,6 @@ export const getCardMatches = ({ chosenNumbers, winningNumbers }: Card) =>
     (acc, num) => (winningNumbers.includes(num) ? (acc += 1) : acc),
     0
   );
-//   {
-//     if (winningNumbers.includes(num)) acc += 1;
-//     return acc;
-//   }, 0);
 
 export const getCardPoints = (card: Card) => {
   const matches = getCardMatches(card);
