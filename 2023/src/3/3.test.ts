@@ -158,7 +158,7 @@ describe("exercise 1", () => {
   });
 });
 
-describe.only("exercise 2", () => {
+describe("exercise 2", () => {
   test("mockData", () => {
     const res = exercise2(mockData);
 
