@@ -1,10 +1,10 @@
+import { checkForValidNumber } from "../utils";
+
 interface Card {
   winningNumbers: number[];
   chosenNumbers: number[];
   copies: number;
 }
-
-const checkForValidNumber = (val: any) => val && !Number.isNaN(Number(val));
 
 export const parseNumbers = (text: string) =>
   text.split(" ").filter(checkForValidNumber).map(Number);

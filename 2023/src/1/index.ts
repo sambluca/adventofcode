@@ -1,4 +1,4 @@
-const checkForValidNumber = (val: any) => !Number.isNaN(Number(val));
+import { checkForValidNumber } from "../utils";
 
 const numberMap: { [k: string]: string } = {
   one: "1",
