@@ -1,42 +1,32 @@
+import {
+  createRange,
+  cut,
+  findIntersectionRange,
+  intersects,
+} from "../range/utils";
+import { IRange } from "../types";
 import { between, checkForValidNumber, isOdd } from "../utils";
 
 type MapData = {
   startingNumber: number;
-  rangeStart: number;
+  start: number;
   rangeLength: number;
 };
 
-type RangeData = {
-  rangeStart: number;
-  rangeEnd: number;
-  rangeOffsetStart: number;
-};
-
-type SeedRangeData = {
-  rangeStart: number;
-  rangeEnd: number;
-};
-
 export const splitLine = (text: string): MapData => {
-  const [startingNumber, rangeStart, rangeLength] = text
-    .split(/\s/)
-    .map(Number);
+  const [startingNumber, start, length] = text.split(/\s/).map(Number);
 
   return {
     startingNumber,
-    rangeStart,
-    rangeLength,
+    start,
+    rangeLength: length,
   };
 };
 
-export const getRange = (text: string): RangeData => {
-  const { startingNumber, rangeStart, rangeLength } = splitLine(text);
+export const getRange = (text: string): IRange => {
+  const { startingNumber, start, rangeLength } = splitLine(text);
 
-  return {
-    rangeStart,
-    rangeEnd: rangeStart + (rangeLength - 1),
-    rangeOffsetStart: startingNumber,
-  };
+  return createRange({ start, rangeLength, offset: startingNumber });
 };
 export const getSeeds = (text: string) =>
   text
@@ -45,19 +35,22 @@ export const getSeeds = (text: string) =>
     .filter(checkForValidNumber)
     .map(Number);
 
-export const getSeedsRanges = (seeds: number[]): SeedRangeData[] =>
+export const getSeedsRanges = (seeds: number[]): IRange[] =>
   seeds
-    .reduce((acc, curr, index) => {
-      const [...copy]: any = acc;
+    .reduce((acc: IRange[], curr, index) => {
+      const [...copy] = acc;
       if (!isOdd(index)) {
+        const obj = copy[index - 1];
+
         copy[index] = {
-          rangeStart: curr,
+          ...obj,
+          start: curr,
         };
       } else {
         const obj = copy[index - 1];
         copy[index - 1] = {
           ...obj,
-          rangeEnd: curr - 1 + obj.rangeStart,
+          end: curr - 1 + obj.start,
         };
       }
 
@@ -67,7 +60,7 @@ export const getSeedsRanges = (seeds: number[]): SeedRangeData[] =>
 
 export const getMaps = (data: string[]) => {
   let prevId = "";
-  const res: { [key: string]: RangeData[] } = {};
+  const res: { [key: string]: IRange[] } = {};
 
   data.forEach((line) => {
     if (line.includes("map:")) {
@@ -84,15 +77,15 @@ export const getMaps = (data: string[]) => {
 
 export const getSoilNumberFromSeeds = (
   seed: number,
-  ranges: RangeData[]
+  ranges: IRange[]
 ): number => {
   const [...copyRanges] = ranges;
   return copyRanges.reduce((acc, curr) => {
-    const { rangeStart, rangeEnd, rangeOffsetStart } = curr;
+    const { start, end, offset } = curr;
 
-    if (between(seed, rangeStart, rangeEnd)) {
+    if (between(seed, start, end) && offset) {
       copyRanges.splice(1);
-      return seed - rangeStart + rangeOffsetStart;
+      return seed - start + offset;
     }
 
     return seed;
@@ -102,37 +95,25 @@ export const getSoilNumberFromSeeds = (
 export const goThroughSteps = (
   seed: number,
   steps: string[],
-  maps: { [key: string]: RangeData[] }
+  maps: { [key: string]: IRange[] }
 ) => {
-  const v = steps.reduce(
-    (acc, curr) => getSoilNumberFromSeeds(acc, maps[curr]),
-    seed
-  );
+  console.log("seed", seed);
+  const v = steps.reduce((acc, curr) => {
+    console.log("curr", curr);
+    console.log("acc", acc);
+
+    return getSoilNumberFromSeeds(acc, maps[curr]);
+  }, seed);
 
   return v;
 };
-export const exercise1 = (text: string) => {
-  const [seed, ...rest] = text
-    .trim()
-    .split(/\n/g)
-    .filter((i) => i !== "");
+export const getSeedRangeValues = ({ start, end }: IRange) => {
+  const rangeLength = end - start + 1;
 
-  const seedArray = getSeeds(seed);
-  const maps = getMaps(rest);
-  const steps = Object.keys(maps);
-
-  const values = seedArray.map((seed) => goThroughSteps(seed, steps, maps));
-
-  return Math.min(...values);
+  return [...Array(rangeLength).keys()].map((x) => x + start);
 };
 
-export const getSeedRangeValues = ({ rangeStart, rangeEnd }: SeedRangeData) => {
-  const rangeLength = rangeEnd - rangeStart + 1;
-
-  return [...Array(rangeLength).keys()].map((x) => x + rangeStart);
-};
-
-export const getAllSeedRangeValues = (seedRanges: SeedRangeData[]): number[] =>
+export const getAllSeedRangeValues = (seedRanges: IRange[]): number[] =>
   seedRanges
     .reduce((acc: number[], curr) => {
       const values = getSeedRangeValues(curr);
@@ -147,28 +128,70 @@ export const getAllSeedRangeValues = (seedRanges: SeedRangeData[]): number[] =>
       return [...acc];
     }, []);
 
-export const exercise2 = (text: string) => {
-  const [seed, ...rest] = text
+export const setUpData = (input: string) => {
+  const [seed, ...rest] = input
     .trim()
     .split(/\n/g)
     .filter((i) => i !== "");
-
   const seedArray = getSeeds(seed);
-  const seedRanges = getSeedsRanges(seedArray);
   const maps = getMaps(rest);
   const steps = Object.keys(maps);
 
+  return { seedArray, steps, maps };
+};
+export const exercise1 = (input: string) => {
+  const { seedArray, steps, maps } = setUpData(input);
+
+  const values = seedArray.map((seed) => goThroughSteps(seed, steps, maps));
+
+  return Math.min(...values);
+};
+
+export const exercise2 = (input: string) => {
+  const { seedArray, steps, maps } = setUpData(input);
+  const seedRanges = getSeedsRanges(seedArray);
+
+  const mapRanges = Object.keys(maps).reduce(
+    (acc, key) => [...acc, ...maps[key]],
+    []
+  );
+
   const values: number[] = [];
 
-  for (let i = 0; i < seedRanges.length; i++) {
-    const seedValues = getAllSeedRangeValues([seedRanges[i]]);
+  const xValue: IRange[] = seedRanges.reduce(
+    (acc, range) => [
+      ...acc,
+      ...mapRanges.reduce((acc: IRange[], curr) => {
+        // console.log("here?", curr, range, findIntersectionRange(curr, range));
+        if (intersects(curr, range))
+          acc.push(findIntersectionRange(curr, range));
+        return acc;
+      }, []),
+    ],
+    []
+  );
+
+  const curr = { start: 0, end: 68, offset: 1 };
+  const range = { start: 55, end: 67 };
+  // console.log("cut(curr, range)", cut(curr, range));
+  // [ { start: 0, end: 54 }, { start: 68, end: 68 } ]
+  // console.log("xValue", xValue);
+  for (let i = 0; i < xValue.length; i++) {
+    // console.log("xValue[i]", xValue[i]);
+
+    const seedValues = getAllSeedRangeValues([xValue[i]]);
+    // console.log("seedValues", seedValues);
 
     const value = seedValues.reduce((acc, seed) => {
       const v = goThroughSteps(seed, steps, maps);
+      // console.log("seed", seed);
+      // console.log("v", v);
+
       return acc < v ? acc : v;
     }, goThroughSteps(seedArray[0], steps, maps));
     values.push(value);
   }
 
+  // console.log("values", values);
   return Math.min(...values);
 };

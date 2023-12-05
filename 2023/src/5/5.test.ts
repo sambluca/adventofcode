@@ -61,25 +61,25 @@ describe("getSeedsRanges", () => {
 
     expect(res).toEqual([
       {
-        rangeStart: 79,
-        rangeEnd: 92,
+        start: 79,
+        end: 92,
       },
       {
-        rangeStart: 55,
-        rangeEnd: 67,
+        start: 55,
+        end: 67,
       },
     ]);
   });
 });
 
 describe("getSeedRangeValues", () => {
-  test("{ rangeStart: 79, rangeEnd:81 }", () => {
-    const res = getSeedRangeValues({ rangeStart: 79, rangeEnd: 81 });
+  test("{ start: 79, end:81 }", () => {
+    const res = getSeedRangeValues({ start: 79, end: 81 });
 
     expect(res).toEqual([79, 80, 81]);
   });
-  test("{ rangeStart: 55, rangeEnd: 67 }", () => {
-    const res = getSeedRangeValues({ rangeStart: 55, rangeEnd: 67 });
+  test("{ start: 55, end: 67 }", () => {
+    const res = getSeedRangeValues({ start: 55, end: 67 });
 
     expect(res).toEqual([55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]);
   });
@@ -88,8 +88,8 @@ describe("getSeedRangeValues", () => {
 describe("getAllSeedRangeValues", () => {
   test("79 14 55 13", () => {
     const res = getAllSeedRangeValues([
-      { rangeStart: 79, rangeEnd: 81 },
-      { rangeStart: 55, rangeEnd: 67 },
+      { start: 79, end: 81 },
+      { start: 55, end: 67 },
     ]);
 
     expect(res).toEqual([
@@ -99,8 +99,8 @@ describe("getAllSeedRangeValues", () => {
 
   test("removes duplicates", () => {
     const res = getAllSeedRangeValues([
-      { rangeStart: 79, rangeEnd: 81 },
-      { rangeStart: 78, rangeEnd: 83 },
+      { start: 79, end: 81 },
+      { start: 78, end: 83 },
     ]);
 
     expect(res).toEqual([79, 80, 81, 78, 82, 83]);
@@ -117,36 +117,36 @@ describe("getMaps", () => {
 
     expect(res).toEqual({
       "seed-to-soil map:": [
-        { rangeStart: 98, rangeEnd: 99, rangeOffsetStart: 50 },
-        { rangeStart: 50, rangeEnd: 97, rangeOffsetStart: 52 },
+        { start: 98, end: 99, offset: 50 },
+        { start: 50, end: 97, offset: 52 },
       ],
       "soil-to-fertilizer map:": [
-        { rangeStart: 15, rangeEnd: 51, rangeOffsetStart: 0 },
-        { rangeStart: 52, rangeEnd: 53, rangeOffsetStart: 37 },
-        { rangeStart: 0, rangeEnd: 14, rangeOffsetStart: 39 },
+        { start: 15, end: 51, offset: 0 },
+        { start: 52, end: 53, offset: 37 },
+        { start: 0, end: 14, offset: 39 },
       ],
       "fertilizer-to-water map:": [
-        { rangeStart: 53, rangeEnd: 60, rangeOffsetStart: 49 },
-        { rangeStart: 11, rangeEnd: 52, rangeOffsetStart: 0 },
-        { rangeStart: 0, rangeEnd: 6, rangeOffsetStart: 42 },
-        { rangeStart: 7, rangeEnd: 10, rangeOffsetStart: 57 },
+        { start: 53, end: 60, offset: 49 },
+        { start: 11, end: 52, offset: 0 },
+        { start: 0, end: 6, offset: 42 },
+        { start: 7, end: 10, offset: 57 },
       ],
       "water-to-light map:": [
-        { rangeStart: 18, rangeEnd: 24, rangeOffsetStart: 88 },
-        { rangeStart: 25, rangeEnd: 94, rangeOffsetStart: 18 },
+        { start: 18, end: 24, offset: 88 },
+        { start: 25, end: 94, offset: 18 },
       ],
       "light-to-temperature map:": [
-        { rangeStart: 77, rangeEnd: 99, rangeOffsetStart: 45 },
-        { rangeStart: 45, rangeEnd: 63, rangeOffsetStart: 81 },
-        { rangeStart: 64, rangeEnd: 76, rangeOffsetStart: 68 },
+        { start: 77, end: 99, offset: 45 },
+        { start: 45, end: 63, offset: 81 },
+        { start: 64, end: 76, offset: 68 },
       ],
       "temperature-to-humidity map:": [
-        { rangeStart: 69, rangeEnd: 69, rangeOffsetStart: 0 },
-        { rangeStart: 0, rangeEnd: 68, rangeOffsetStart: 1 },
+        { start: 69, end: 69, offset: 0 },
+        { start: 0, end: 68, offset: 1 },
       ],
       "humidity-to-location map:": [
-        { rangeStart: 56, rangeEnd: 92, rangeOffsetStart: 60 },
-        { rangeStart: 93, rangeEnd: 96, rangeOffsetStart: 56 },
+        { start: 56, end: 92, offset: 60 },
+        { start: 93, end: 96, offset: 56 },
       ],
     });
   });
@@ -158,9 +158,9 @@ describe("getRange", () => {
 
     expect(res).toEqual(
       expect.objectContaining({
-        rangeStart: 98,
-        rangeEnd: 99,
-        rangeOffsetStart: 50,
+        start: 98,
+        end: 99,
+        offset: 50,
       })
     );
   });
@@ -170,9 +170,9 @@ describe("getRange", () => {
 
     expect(res).toEqual(
       expect.objectContaining({
-        rangeStart: 50,
-        rangeEnd: 97,
-        rangeOffsetStart: 52,
+        start: 50,
+        end: 97,
+        offset: 52,
       })
     );
   });
@@ -186,7 +186,7 @@ describe("splitLine", () => {
       expect.objectContaining({
         startingNumber: 50,
         rangeLength: 2,
-        rangeStart: 98,
+        start: 98,
       })
     );
   });
@@ -196,14 +196,14 @@ describe("getSoilNumberFromSeed", () => {
   test("79", () => {
     const res = getSoilNumberFromSeeds(79, [
       {
-        rangeStart: 98,
-        rangeEnd: 99,
-        rangeOffsetStart: 50,
+        start: 98,
+        end: 99,
+        offset: 50,
       },
       {
-        rangeStart: 50,
-        rangeEnd: 97,
-        rangeOffsetStart: 52,
+        start: 50,
+        end: 97,
+        offset: 52,
       },
     ]);
 
@@ -213,14 +213,14 @@ describe("getSoilNumberFromSeed", () => {
   test("14", () => {
     const res = getSoilNumberFromSeeds(14, [
       {
-        rangeStart: 98,
-        rangeEnd: 99,
-        rangeOffsetStart: 50,
+        start: 98,
+        end: 99,
+        offset: 50,
       },
       {
-        rangeStart: 50,
-        rangeEnd: 97,
-        rangeOffsetStart: 52,
+        start: 50,
+        end: 97,
+        offset: 52,
       },
     ]);
 
@@ -230,14 +230,14 @@ describe("getSoilNumberFromSeed", () => {
   test("55", () => {
     const res = getSoilNumberFromSeeds(55, [
       {
-        rangeStart: 98,
-        rangeEnd: 99,
-        rangeOffsetStart: 50,
+        start: 98,
+        end: 99,
+        offset: 50,
       },
       {
-        rangeStart: 50,
-        rangeEnd: 97,
-        rangeOffsetStart: 52,
+        start: 50,
+        end: 97,
+        offset: 52,
       },
     ]);
 
@@ -247,14 +247,14 @@ describe("getSoilNumberFromSeed", () => {
   test("13", () => {
     const res = getSoilNumberFromSeeds(13, [
       {
-        rangeStart: 98,
-        rangeEnd: 99,
-        rangeOffsetStart: 50,
+        start: 98,
+        end: 99,
+        offset: 50,
       },
       {
-        rangeStart: 50,
-        rangeEnd: 97,
-        rangeOffsetStart: 52,
+        start: 50,
+        end: 97,
+        offset: 52,
       },
     ]);
 
@@ -264,25 +264,34 @@ describe("getSoilNumberFromSeed", () => {
   test("98", () => {
     const res = getSoilNumberFromSeeds(98, [
       {
-        rangeStart: 98,
-        rangeEnd: 99,
-        rangeOffsetStart: 50,
+        start: 98,
+        end: 99,
+        offset: 50,
       },
       {
-        rangeStart: 50,
-        rangeEnd: 97,
-        rangeOffsetStart: 52,
+        start: 50,
+        end: 97,
+        offset: 52,
       },
     ]);
 
     expect(res).toEqual(50);
   });
 
+  test("69", () => {
+    const res = getSoilNumberFromSeeds(69, [
+      { start: 69, end: 69, offset: 0 },
+      { start: 0, end: 68, offset: 1 },
+    ]);
+
+    expect(res).toEqual(69);
+  });
+
   test("soil to fertiliser", () => {
     const res = getSoilNumberFromSeeds(81, [
-      { rangeStart: 15, rangeEnd: 51, rangeOffsetStart: 0 },
-      { rangeStart: 52, rangeEnd: 53, rangeOffsetStart: 37 },
-      { rangeStart: 0, rangeEnd: 14, rangeOffsetStart: 39 },
+      { start: 15, end: 51, offset: 0 },
+      { start: 52, end: 53, offset: 37 },
+      { start: 0, end: 14, offset: 39 },
     ]);
 
     expect(res).toEqual(81);
@@ -290,10 +299,10 @@ describe("getSoilNumberFromSeed", () => {
 
   test("fertiliser to water", () => {
     const res = getSoilNumberFromSeeds(81, [
-      { rangeStart: 53, rangeEnd: 60, rangeOffsetStart: 49 },
-      { rangeStart: 11, rangeEnd: 52, rangeOffsetStart: 0 },
-      { rangeStart: 0, rangeEnd: 6, rangeOffsetStart: 42 },
-      { rangeStart: 7, rangeEnd: 10, rangeOffsetStart: 57 },
+      { start: 53, end: 60, offset: 49 },
+      { start: 11, end: 52, offset: 0 },
+      { start: 0, end: 6, offset: 42 },
+      { start: 7, end: 10, offset: 57 },
     ]);
 
     expect(res).toEqual(81);
@@ -301,8 +310,8 @@ describe("getSoilNumberFromSeed", () => {
 
   test("water to light", () => {
     const res = getSoilNumberFromSeeds(81, [
-      { rangeStart: 18, rangeEnd: 24, rangeOffsetStart: 88 },
-      { rangeStart: 25, rangeEnd: 94, rangeOffsetStart: 18 },
+      { start: 18, end: 24, offset: 88 },
+      { start: 25, end: 94, offset: 18 },
     ]);
 
     expect(res).toEqual(74);
@@ -310,8 +319,8 @@ describe("getSoilNumberFromSeed", () => {
 
   test("49", () => {
     const res = getSoilNumberFromSeeds(49, [
-      { rangeStart: 18, rangeEnd: 24, rangeOffsetStart: 88 },
-      { rangeStart: 25, rangeEnd: 94, rangeOffsetStart: 18 },
+      { start: 18, end: 24, offset: 88 },
+      { start: 25, end: 94, offset: 18 },
     ]);
 
     expect(res).toEqual(42);
@@ -319,9 +328,9 @@ describe("getSoilNumberFromSeed", () => {
 
   test("light to temperature", () => {
     const res = getSoilNumberFromSeeds(74, [
-      { rangeStart: 77, rangeEnd: 99, rangeOffsetStart: 45 },
-      { rangeStart: 45, rangeEnd: 63, rangeOffsetStart: 81 },
-      { rangeStart: 64, rangeEnd: 76, rangeOffsetStart: 68 },
+      { start: 77, end: 99, offset: 45 },
+      { start: 45, end: 63, offset: 81 },
+      { start: 64, end: 76, offset: 68 },
     ]);
 
     expect(res).toEqual(78);
@@ -329,8 +338,8 @@ describe("getSoilNumberFromSeed", () => {
 
   test("temp to humidity", () => {
     const res = getSoilNumberFromSeeds(78, [
-      { rangeStart: 69, rangeEnd: 69, rangeOffsetStart: 0 },
-      { rangeStart: 0, rangeEnd: 68, rangeOffsetStart: 1 },
+      { start: 69, end: 69, offset: 0 },
+      { start: 0, end: 68, offset: 1 },
     ]);
 
     expect(res).toEqual(78);
@@ -338,8 +347,8 @@ describe("getSoilNumberFromSeed", () => {
 
   test("humid to map", () => {
     const res = getSoilNumberFromSeeds(78, [
-      { rangeStart: 56, rangeEnd: 92, rangeOffsetStart: 60 },
-      { rangeStart: 93, rangeEnd: 96, rangeOffsetStart: 56 },
+      { start: 56, end: 92, offset: 60 },
+      { start: 93, end: 96, offset: 56 },
     ]);
 
     expect(res).toEqual(82);
@@ -374,7 +383,7 @@ describe("exercise 2", () => {
   });
 });
 
-describe("goThroughSteps", () => {
+describe.only("goThroughSteps", () => {
   test("79", () => {
     const res = goThroughSteps(
       79,
@@ -389,36 +398,87 @@ describe("goThroughSteps", () => {
       ],
       {
         "seed-to-soil map:": [
-          { rangeStart: 98, rangeEnd: 99, rangeOffsetStart: 50 },
-          { rangeStart: 50, rangeEnd: 97, rangeOffsetStart: 52 },
+          { start: 98, end: 99, offset: 50 },
+          { start: 50, end: 97, offset: 52 },
         ],
         "soil-to-fertilizer map:": [
-          { rangeStart: 15, rangeEnd: 51, rangeOffsetStart: 0 },
-          { rangeStart: 52, rangeEnd: 53, rangeOffsetStart: 37 },
-          { rangeStart: 0, rangeEnd: 14, rangeOffsetStart: 39 },
+          { start: 15, end: 51, offset: 0 },
+          { start: 52, end: 53, offset: 37 },
+          { start: 0, end: 14, offset: 39 },
         ],
         "fertilizer-to-water map:": [
-          { rangeStart: 53, rangeEnd: 60, rangeOffsetStart: 49 },
-          { rangeStart: 11, rangeEnd: 52, rangeOffsetStart: 0 },
-          { rangeStart: 0, rangeEnd: 6, rangeOffsetStart: 42 },
-          { rangeStart: 7, rangeEnd: 10, rangeOffsetStart: 57 },
+          { start: 53, end: 60, offset: 49 },
+          { start: 11, end: 52, offset: 0 },
+          { start: 0, end: 6, offset: 42 },
+          { start: 7, end: 10, offset: 57 },
         ],
         "water-to-light map:": [
-          { rangeStart: 18, rangeEnd: 24, rangeOffsetStart: 88 },
-          { rangeStart: 25, rangeEnd: 94, rangeOffsetStart: 18 },
+          { start: 18, end: 24, offset: 88 },
+          { start: 25, end: 94, offset: 18 },
         ],
         "light-to-temperature map:": [
-          { rangeStart: 77, rangeEnd: 99, rangeOffsetStart: 45 },
-          { rangeStart: 45, rangeEnd: 63, rangeOffsetStart: 81 },
-          { rangeStart: 64, rangeEnd: 76, rangeOffsetStart: 68 },
+          { start: 77, end: 99, offset: 45 },
+          { start: 45, end: 63, offset: 81 },
+          { start: 64, end: 76, offset: 68 },
         ],
         "temperature-to-humidity map:": [
-          { rangeStart: 69, rangeEnd: 69, rangeOffsetStart: 0 },
-          { rangeStart: 0, rangeEnd: 68, rangeOffsetStart: 1 },
+          { start: 69, end: 69, offset: 0 },
+          { start: 0, end: 68, offset: 1 },
         ],
         "humidity-to-location map:": [
-          { rangeStart: 56, rangeEnd: 92, rangeOffsetStart: 60 },
-          { rangeStart: 93, rangeEnd: 96, rangeOffsetStart: 56 },
+          { start: 56, end: 92, offset: 60 },
+          { start: 93, end: 96, offset: 56 },
+        ],
+      }
+    );
+
+    expect(res).toEqual(82);
+  });
+
+  test.only("70", () => {
+    const res = goThroughSteps(
+      70,
+      [
+        "seed-to-soil map:",
+        "soil-to-fertilizer map:",
+        "fertilizer-to-water map:",
+        "water-to-light map:",
+        "light-to-temperature map:",
+        "temperature-to-humidity map:",
+        "humidity-to-location map:",
+      ],
+      {
+        "seed-to-soil map:": [
+          { start: 98, end: 99, offset: 50 },
+          { start: 50, end: 97, offset: 52 },
+        ],
+        "soil-to-fertilizer map:": [
+          { start: 15, end: 51, offset: 0 },
+          { start: 52, end: 53, offset: 37 },
+          { start: 0, end: 14, offset: 39 },
+        ],
+        "fertilizer-to-water map:": [
+          { start: 53, end: 60, offset: 49 },
+          { start: 11, end: 52, offset: 0 },
+          { start: 0, end: 6, offset: 42 },
+          { start: 7, end: 10, offset: 57 },
+        ],
+        "water-to-light map:": [
+          { start: 18, end: 24, offset: 88 },
+          { start: 25, end: 94, offset: 18 },
+        ],
+        "light-to-temperature map:": [
+          { start: 77, end: 99, offset: 45 },
+          { start: 45, end: 63, offset: 81 },
+          { start: 64, end: 76, offset: 68 },
+        ],
+        "temperature-to-humidity map:": [
+          { start: 69, end: 69, offset: 0 },
+          { start: 0, end: 68, offset: 1 },
+        ],
+        "humidity-to-location map:": [
+          { start: 56, end: 92, offset: 60 },
+          { start: 93, end: 96, offset: 56 },
         ],
       }
     );
@@ -440,36 +500,36 @@ describe("goThroughSteps", () => {
       ],
       {
         "seed-to-soil map:": [
-          { rangeStart: 98, rangeEnd: 99, rangeOffsetStart: 50 },
-          { rangeStart: 50, rangeEnd: 97, rangeOffsetStart: 52 },
+          { start: 98, end: 99, offset: 50 },
+          { start: 50, end: 97, offset: 52 },
         ],
         "soil-to-fertilizer map:": [
-          { rangeStart: 15, rangeEnd: 51, rangeOffsetStart: 0 },
-          { rangeStart: 52, rangeEnd: 53, rangeOffsetStart: 37 },
-          { rangeStart: 0, rangeEnd: 14, rangeOffsetStart: 39 },
+          { start: 15, end: 51, offset: 0 },
+          { start: 52, end: 53, offset: 37 },
+          { start: 0, end: 14, offset: 39 },
         ],
         "fertilizer-to-water map:": [
-          { rangeStart: 53, rangeEnd: 60, rangeOffsetStart: 49 },
-          { rangeStart: 11, rangeEnd: 52, rangeOffsetStart: 0 },
-          { rangeStart: 0, rangeEnd: 6, rangeOffsetStart: 42 },
-          { rangeStart: 7, rangeEnd: 10, rangeOffsetStart: 57 },
+          { start: 53, end: 60, offset: 49 },
+          { start: 11, end: 52, offset: 0 },
+          { start: 0, end: 6, offset: 42 },
+          { start: 7, end: 10, offset: 57 },
         ],
         "water-to-light map:": [
-          { rangeStart: 18, rangeEnd: 24, rangeOffsetStart: 88 },
-          { rangeStart: 25, rangeEnd: 94, rangeOffsetStart: 18 },
+          { start: 18, end: 24, offset: 88 },
+          { start: 25, end: 94, offset: 18 },
         ],
         "light-to-temperature map:": [
-          { rangeStart: 77, rangeEnd: 99, rangeOffsetStart: 45 },
-          { rangeStart: 45, rangeEnd: 63, rangeOffsetStart: 81 },
-          { rangeStart: 64, rangeEnd: 76, rangeOffsetStart: 68 },
+          { start: 77, end: 99, offset: 45 },
+          { start: 45, end: 63, offset: 81 },
+          { start: 64, end: 76, offset: 68 },
         ],
         "temperature-to-humidity map:": [
-          { rangeStart: 69, rangeEnd: 69, rangeOffsetStart: 0 },
-          { rangeStart: 0, rangeEnd: 68, rangeOffsetStart: 1 },
+          { start: 69, end: 69, offset: 0 },
+          { start: 0, end: 68, offset: 1 },
         ],
         "humidity-to-location map:": [
-          { rangeStart: 56, rangeEnd: 92, rangeOffsetStart: 60 },
-          { rangeStart: 93, rangeEnd: 96, rangeOffsetStart: 56 },
+          { start: 56, end: 92, offset: 60 },
+          { start: 93, end: 96, offset: 56 },
         ],
       }
     );
@@ -491,36 +551,36 @@ describe("goThroughSteps", () => {
       ],
       {
         "seed-to-soil map:": [
-          { rangeStart: 98, rangeEnd: 99, rangeOffsetStart: 50 },
-          { rangeStart: 50, rangeEnd: 97, rangeOffsetStart: 52 },
+          { start: 98, end: 99, offset: 50 },
+          { start: 50, end: 97, offset: 52 },
         ],
         "soil-to-fertilizer map:": [
-          { rangeStart: 15, rangeEnd: 51, rangeOffsetStart: 0 },
-          { rangeStart: 52, rangeEnd: 53, rangeOffsetStart: 37 },
-          { rangeStart: 0, rangeEnd: 14, rangeOffsetStart: 39 },
+          { start: 15, end: 51, offset: 0 },
+          { start: 52, end: 53, offset: 37 },
+          { start: 0, end: 14, offset: 39 },
         ],
         "fertilizer-to-water map:": [
-          { rangeStart: 53, rangeEnd: 60, rangeOffsetStart: 49 },
-          { rangeStart: 11, rangeEnd: 52, rangeOffsetStart: 0 },
-          { rangeStart: 0, rangeEnd: 6, rangeOffsetStart: 42 },
-          { rangeStart: 7, rangeEnd: 10, rangeOffsetStart: 57 },
+          { start: 53, end: 60, offset: 49 },
+          { start: 11, end: 52, offset: 0 },
+          { start: 0, end: 6, offset: 42 },
+          { start: 7, end: 10, offset: 57 },
         ],
         "water-to-light map:": [
-          { rangeStart: 18, rangeEnd: 24, rangeOffsetStart: 88 },
-          { rangeStart: 25, rangeEnd: 94, rangeOffsetStart: 18 },
+          { start: 18, end: 24, offset: 88 },
+          { start: 25, end: 94, offset: 18 },
         ],
         "light-to-temperature map:": [
-          { rangeStart: 77, rangeEnd: 99, rangeOffsetStart: 45 },
-          { rangeStart: 45, rangeEnd: 63, rangeOffsetStart: 81 },
-          { rangeStart: 64, rangeEnd: 76, rangeOffsetStart: 68 },
+          { start: 77, end: 99, offset: 45 },
+          { start: 45, end: 63, offset: 81 },
+          { start: 64, end: 76, offset: 68 },
         ],
         "temperature-to-humidity map:": [
-          { rangeStart: 69, rangeEnd: 69, rangeOffsetStart: 0 },
-          { rangeStart: 0, rangeEnd: 68, rangeOffsetStart: 1 },
+          { start: 69, end: 69, offset: 0 },
+          { start: 0, end: 68, offset: 1 },
         ],
         "humidity-to-location map:": [
-          { rangeStart: 56, rangeEnd: 92, rangeOffsetStart: 60 },
-          { rangeStart: 93, rangeEnd: 96, rangeOffsetStart: 56 },
+          { start: 56, end: 92, offset: 60 },
+          { start: 93, end: 96, offset: 56 },
         ],
       }
     );
@@ -542,36 +602,36 @@ describe("goThroughSteps", () => {
       ],
       {
         "seed-to-soil map:": [
-          { rangeStart: 98, rangeEnd: 99, rangeOffsetStart: 50 },
-          { rangeStart: 50, rangeEnd: 97, rangeOffsetStart: 52 },
+          { start: 98, end: 99, offset: 50 },
+          { start: 50, end: 97, offset: 52 },
         ],
         "soil-to-fertilizer map:": [
-          { rangeStart: 15, rangeEnd: 51, rangeOffsetStart: 0 },
-          { rangeStart: 52, rangeEnd: 53, rangeOffsetStart: 37 },
-          { rangeStart: 0, rangeEnd: 14, rangeOffsetStart: 39 },
+          { start: 15, end: 51, offset: 0 },
+          { start: 52, end: 53, offset: 37 },
+          { start: 0, end: 14, offset: 39 },
         ],
         "fertilizer-to-water map:": [
-          { rangeStart: 53, rangeEnd: 60, rangeOffsetStart: 49 },
-          { rangeStart: 11, rangeEnd: 52, rangeOffsetStart: 0 },
-          { rangeStart: 0, rangeEnd: 6, rangeOffsetStart: 42 },
-          { rangeStart: 7, rangeEnd: 10, rangeOffsetStart: 57 },
+          { start: 53, end: 60, offset: 49 },
+          { start: 11, end: 52, offset: 0 },
+          { start: 0, end: 6, offset: 42 },
+          { start: 7, end: 10, offset: 57 },
         ],
         "water-to-light map:": [
-          { rangeStart: 18, rangeEnd: 24, rangeOffsetStart: 88 },
-          { rangeStart: 25, rangeEnd: 94, rangeOffsetStart: 18 },
+          { start: 18, end: 24, offset: 88 },
+          { start: 25, end: 94, offset: 18 },
         ],
         "light-to-temperature map:": [
-          { rangeStart: 77, rangeEnd: 99, rangeOffsetStart: 45 },
-          { rangeStart: 45, rangeEnd: 63, rangeOffsetStart: 81 },
-          { rangeStart: 64, rangeEnd: 76, rangeOffsetStart: 68 },
+          { start: 77, end: 99, offset: 45 },
+          { start: 45, end: 63, offset: 81 },
+          { start: 64, end: 76, offset: 68 },
         ],
         "temperature-to-humidity map:": [
-          { rangeStart: 69, rangeEnd: 69, rangeOffsetStart: 0 },
-          { rangeStart: 0, rangeEnd: 68, rangeOffsetStart: 1 },
+          { start: 69, end: 69, offset: 0 },
+          { start: 0, end: 68, offset: 1 },
         ],
         "humidity-to-location map:": [
-          { rangeStart: 56, rangeEnd: 92, rangeOffsetStart: 60 },
-          { rangeStart: 93, rangeEnd: 96, rangeOffsetStart: 56 },
+          { start: 56, end: 92, offset: 60 },
+          { start: 93, end: 96, offset: 56 },
         ],
       }
     );
