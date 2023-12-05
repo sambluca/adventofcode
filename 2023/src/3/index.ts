@@ -1,4 +1,4 @@
-const checkForValidNumber = (val: any) => !Number.isNaN(Number(val));
+import { checkForValidNumber } from "../utils";
 
 export const isSymbol = (text: string) =>
   !text.match(/([a-zA-Z]|[\d]|[.]|\s)/g);
