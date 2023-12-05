@@ -193,6 +193,15 @@ describe("splitLine", () => {
 });
 
 describe("getSoilNumberFromSeed", () => {
+  test.only("52", () => {
+    const res = getSoilNumberFromSeeds(52, [
+      { start: 53, end: 60, offset: 49 },
+      { start: 11, end: 52, offset: 0 },
+      { start: 0, end: 6, offset: 42 },
+      { start: 7, end: 10, offset: 57 },
+    ]);
+    expect(res).toEqual(41);
+  });
   test("79", () => {
     const res = getSoilNumberFromSeeds(79, [
       {
@@ -356,7 +365,7 @@ describe("getSoilNumberFromSeed", () => {
 });
 
 describe("exercise 1", () => {
-  test("mockData", () => {
+  test.only("mockData", () => {
     const res = exercise1(mockData);
 
     expect(res).toEqual(35);
@@ -383,7 +392,7 @@ describe("exercise 2", () => {
   });
 });
 
-describe.only("goThroughSteps", () => {
+describe("goThroughSteps", () => {
   test("79", () => {
     const res = goThroughSteps(
       79,
@@ -435,7 +444,7 @@ describe.only("goThroughSteps", () => {
     expect(res).toEqual(82);
   });
 
-  test.only("70", () => {
+  test("70", () => {
     const res = goThroughSteps(
       70,
       [

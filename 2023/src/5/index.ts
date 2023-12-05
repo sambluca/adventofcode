@@ -83,9 +83,10 @@ export const getSoilNumberFromSeeds = (
   return copyRanges.reduce((acc, curr) => {
     const { start, end, offset } = curr;
 
-    if (between(seed, start, end) && offset) {
+    if (between(seed, start, end)) {
       copyRanges.splice(1);
-      return seed - start + offset;
+      if (offset) return seed - start + offset;
+      return seed;
     }
 
     return seed;
@@ -101,6 +102,17 @@ export const goThroughSteps = (
   const v = steps.reduce((acc, curr) => {
     console.log("curr", curr);
     console.log("acc", acc);
+    console.log("used mapp", maps[curr]);
+    console.log("value", getSoilNumberFromSeeds(acc, maps[curr]));
+    // console.log(
+    //   "straight up",
+    //   getSoilNumberFromSeeds(52, [
+    //     { start: 53, end: 60, offset: 49 },
+    //     { start: 11, end: 52, offset: 0 },
+    //     { start: 0, end: 6, offset: 42 },
+    //     { start: 7, end: 10, offset: 57 },
+    //   ])
+    // );
 
     return getSoilNumberFromSeeds(acc, maps[curr]);
   }, seed);
