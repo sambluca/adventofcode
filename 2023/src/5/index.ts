@@ -1,4 +1,4 @@
-import { between, checkForValidNumber, isOdd } from "../utils";
+import { between, isNumber, isOdd } from "../utils";
 
 type MapData = {
   startingNumber: number;
@@ -42,7 +42,7 @@ export const getSeeds = (text: string) =>
   text
     .replace(/(seeds:)/, "")
     .split(/\s/)
-    .filter(checkForValidNumber)
+    .filter(isNumber)
     .map(Number);
 
 export const getSeedsRanges = (seeds: number[]): SeedRangeData[] =>

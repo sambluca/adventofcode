@@ -1,4 +1,4 @@
-import { checkForValidNumber } from "../utils";
+import { isNumber } from "../utils";
 
 export const isSymbol = (text: string) =>
   !text.match(/([a-zA-Z]|[\d]|[.]|\s)/g);
@@ -7,7 +7,7 @@ export const checkForStar = (text: string) => text.match(/([*])/g);
 
 const getNumberFromArray = (row: string[]) =>
   row.reduce((acc: string[], curr) => {
-    if (checkForValidNumber(curr)) {
+    if (isNumber(curr)) {
       acc.push(curr);
     } else {
       row.splice(1);
@@ -33,13 +33,13 @@ export const exercise1 = (text: string) => {
     return (
       acc +
       row.reduce((rowAcc, item, rowI) => {
-        const isNumber = checkForValidNumber(item);
-        if (isNumber) {
+        const itemNumber = isNumber(item);
+        if (itemNumber) {
           const symbolEitherSide =
             isSymbol(row[rowI - 1] || "A") || isSymbol(row[rowI + 1] || "A");
 
-          const startNumber = !checkForValidNumber(row[rowI - 1]);
-          const endNumber = !checkForValidNumber(row[rowI + 1]);
+          const startNumber = !isNumber(row[rowI - 1]);
+          const endNumber = !isNumber(row[rowI + 1]);
 
           const getNumber = startNumber
             ? getFullNumberFromLeft
@@ -93,22 +93,22 @@ export const exercise2 = (text: string) => {
         const rowAbove = grid[gridI - 1] || [];
         const rowBelow = grid[gridI + 1] || [];
         const numberLeft: number =
-          (checkForValidNumber(row[rowI - 1]) &&
+          (isNumber(row[rowI - 1]) &&
             Number(getFullNumberFromRight(row, rowI - 1))) ||
           0;
 
         const numberRight: number =
-          (checkForValidNumber(row[rowI + 1]) &&
+          (isNumber(row[rowI + 1]) &&
             Number(getFullNumberFromLeft(row, rowI + 1))) ||
           0;
 
-        const downLeft = checkForValidNumber(rowBelow[rowI - 1]);
-        const downRight = checkForValidNumber(rowBelow[rowI + 1]);
-        const downMiddle = checkForValidNumber(rowBelow[rowI]);
+        const downLeft = isNumber(rowBelow[rowI - 1]);
+        const downRight = isNumber(rowBelow[rowI + 1]);
+        const downMiddle = isNumber(rowBelow[rowI]);
 
-        const upLeft = checkForValidNumber(rowAbove[rowI - 1]);
-        const upRight = checkForValidNumber(rowAbove[rowI + 1]);
-        const upMiddle = checkForValidNumber(rowAbove[rowI]);
+        const upLeft = isNumber(rowAbove[rowI - 1]);
+        const upRight = isNumber(rowAbove[rowI + 1]);
+        const upMiddle = isNumber(rowAbove[rowI]);
 
         // check around the start and get the right numbers
         if (downLeft && !downMiddle) {

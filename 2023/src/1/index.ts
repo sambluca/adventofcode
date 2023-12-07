@@ -1,4 +1,4 @@
-import { checkForValidNumber } from "../utils";
+import { isNumber } from "../utils";
 
 const numberMap: { [k: string]: string } = {
   one: "1",
@@ -16,11 +16,9 @@ const convertToNumber = (items: string[]) => {
   const firstItem = items[0];
   const lastItem = items[items.length - 1];
 
-  const first = checkForValidNumber(firstItem)
-    ? firstItem
-    : numberMap[firstItem];
+  const first = isNumber(firstItem) ? firstItem : numberMap[firstItem];
 
-  const last = checkForValidNumber(lastItem) ? lastItem : numberMap[lastItem];
+  const last = isNumber(lastItem) ? lastItem : numberMap[lastItem];
 
   return Number(`${first}${last}`);
 };
@@ -51,7 +49,7 @@ export const day1 = (data: string, exercise2?: boolean) => {
     .map((item) =>
       exercise2 ? getStringValueExercise2(item) : getStringValueExercise1(item)
     )
-    .filter(checkForValidNumber);
+    .filter(isNumber);
 
   return values.reduce((acc, curr) => acc + curr, 0);
 };
