@@ -29,9 +29,10 @@ export class Arr extends Array {
 
   getInstances(): { [key: string]: number } {
     return this.reduce((acc, curr) => {
-      if (!acc[curr]) acc[curr] = 0;
+      const key = !isObject(curr) ? curr : JSON.stringify(curr);
+      if (!acc[key]) acc[key] = 0;
 
-      acc[curr] += 1;
+      acc[key] += 1;
 
       return acc;
     }, {});

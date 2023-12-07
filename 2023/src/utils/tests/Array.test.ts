@@ -35,6 +35,39 @@ describe("Array Class", () => {
       );
     });
 
+    test("obj", () => {
+      const arr = new Arr([{ 1: 2 }, { 1: 2 }, { 1: 4 }]);
+
+      expect(arr.getInstances()).toEqual(
+        expect.objectContaining({
+          '{"1":2}': 2,
+          '{"1":4}': 1,
+        })
+      );
+    });
+
+    test("arr", () => {
+      const arr = new Arr([
+        { 1: 2 },
+        { 1: 2 },
+        { 1: 4 },
+        [1, 2, 3],
+        [1, 2, 3],
+        [1, 1],
+        4,
+      ]);
+
+      expect(arr.getInstances()).toEqual(
+        expect.objectContaining({
+          '{"1":2}': 2,
+          '{"1":4}': 1,
+          "[1,2,3]": 2,
+          "[1,1]": 1,
+          4: 1,
+        })
+      );
+    });
+
     test("2 count", () => {
       const arr = new Arr([1, 2, 2, 3, 2]);
 
