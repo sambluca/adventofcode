@@ -1,4 +1,4 @@
-import { checkForValidNumber } from "../utils";
+import { isNumber } from "../utils";
 
 interface Card {
   winningNumbers: number[];
@@ -7,7 +7,7 @@ interface Card {
 }
 
 export const parseNumbers = (text: string) =>
-  text.split(" ").filter(checkForValidNumber).map(Number);
+  text.split(" ").filter(isNumber).map(Number);
 export const splitNumbers = (text: string) => text.split("|");
 export const stripCard = (text: string) => text.replace(/(Card \d: )/g, "");
 export const parseData = (text: string): Card[] =>

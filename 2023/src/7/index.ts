@@ -1,4 +1,4 @@
-import { ArrayUtils } from "../utils/Array";
+import { Arr } from "../utils/Array";
 
 const numberCards = ["T", "9", "8", "7", "6", "5", "4", "3", "2", "1"];
 const pictureCards = ["A", "K", "Q"];
@@ -18,8 +18,8 @@ export const parse = (text: string) =>
 
 export const scoreHand = (hand: string, joker?: boolean) => {
   if (hand === "JJJJJ" && joker) return 50;
-  const cards = new ArrayUtils(hand.split(""));
-  const groupedValues = cards.countValues();
+  const cards = new Arr(hand.split(""));
+  const groupedValues = cards.instances;
   let jokers = 0;
   if (joker && groupedValues.J) {
     jokers = groupedValues.J;

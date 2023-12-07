@@ -34,39 +34,6 @@ describe("sortHands", () => {
     expect(res).toEqual(["QQQJA", "T55J5", "KK677", "KTJJT", "32T3K"]);
   });
 });
-describe("exercise 1", () => {
-  test("mockData", () => {
-    const res = exercise1(mockData);
-
-    expect(res).toEqual(6440);
-  });
-
-  test.skip("data", () => {
-    const res = exercise1(data);
-
-    expect(res).toEqual(253954294);
-  });
-});
-
-describe("exercise 2", () => {
-  test("mockData", () => {
-    const res = exercise2(mockData);
-
-    expect(res).toEqual(5905);
-  });
-
-  test("mockData2", () => {
-    const res = exercise2(mockData2);
-
-    expect(res).toEqual(769);
-  });
-
-  test.skip("data", () => {
-    const res = exercise2(data);
-
-    expect(res).toEqual(254837398);
-  });
-});
 
 describe("scoreHand", () => {
   describe("no joker", () => {
@@ -177,5 +144,39 @@ describe("scoreHand", () => {
 
       expect(res).toEqual(11);
     });
+  });
+});
+
+describe("exercise 1", () => {
+  test("mockData", () => {
+    const res = exercise1(mockData);
+
+    expect(res).toEqual(6440);
+  });
+
+  test.skip("data", () => {
+    const res = exercise1(data);
+
+    expect(res).toEqual(253954294);
+  });
+});
+
+describe("exercise 2", () => {
+  test("mockData", () => {
+    const res = exercise2(mockData);
+
+    expect(res).toEqual(5905);
+  });
+
+  test("mockData2", () => {
+    const res = exercise2(mockData2);
+
+    expect(res).toEqual(769);
+  });
+
+  test.skip("data", () => {
+    const res = exercise2(data);
+
+    expect(res).toEqual(254837398);
   });
 });

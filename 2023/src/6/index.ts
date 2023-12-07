@@ -1,4 +1,4 @@
-import { checkForValidNumber } from "../utils";
+import { isNumber } from "../utils";
 
 type Race = {
   time: number;
@@ -10,7 +10,7 @@ export const setUpData = (text: string): { part1: Race[]; part2: Race } => {
     line
       .replace(/(Time:|Distance:)/g, "")
       .split(/ /g)
-      .filter(checkForValidNumber)
+      .filter(isNumber)
       .map(Number)
   );
 
