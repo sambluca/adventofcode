@@ -1,3 +1,4 @@
+import { findGcd, findLcm } from ".";
 import { deepEqual, isObject } from "./Object";
 
 export class Arr extends Array {
@@ -9,10 +10,12 @@ export class Arr extends Array {
     return Array;
   }
 
+  // returns only unique items from array
   get unique() {
     return [...new Set(this)];
   }
 
+  // returns the values that appear the highest number of times in the array
   get mostCommon() {
     const count = this.getInstances();
     const highestValue = Math.max(...Object.values(count));
@@ -23,10 +26,43 @@ export class Arr extends Array {
     }, []);
   }
 
+  // Counts the number of times an item appears in the array
   get instances() {
     return this.getInstances();
   }
 
+  // Finds the greatest common divisor between the numbers
+  get gcd() {
+    const allNumbers = this.every(function (element) {
+      return typeof element === "number";
+    });
+
+    if (!allNumbers) {
+      throw new Error("Can only find GCD if all values are numbers");
+    }
+
+    return this.reduce((acc, curr) => {
+      const result = findGcd(curr, acc);
+      if (result == 1) {
+        return 1;
+      }
+
+      return result;
+    }, this[0]);
+  }
+
+  // Finds the lowest common multiple between the numbers
+  get lcm() {
+    const allNumbers = this.every(function (element) {
+      return typeof element === "number";
+    });
+
+    if (!allNumbers) {
+      throw new Error("Can only find LCM if all values are numbers");
+    }
+
+    return this.reduce(findLcm);
+  }
   getInstances(): { [key: string]: number } {
     return this.reduce((acc, curr) => {
       const key = !isObject(curr) ? curr : JSON.stringify(curr);
@@ -38,10 +74,12 @@ export class Arr extends Array {
     }, {});
   }
 
+  // shallow search for item in array
   contains(search: any) {
     return this.includes(search);
   }
 
+  // deep compares all items in array, returns items that appear in both
   compare(compArr: Arr) {
     const shared = [];
     compArr.forEach((compItem) => {

@@ -178,4 +178,42 @@ describe("Array Class", () => {
       expect(res.mostCommon).toEqual(["J"]);
     });
   });
+
+  describe("gcd", () => {
+    test("does not work if arr includes non number", () => {
+      const arr = new Arr([1, 2, 3, "b"]);
+      let err = "";
+      try {
+        arr.gcd;
+      } catch (e) {
+        err = e.message;
+      }
+
+      expect(err).toEqual("Can only find GCD if all values are numbers");
+    });
+
+    test("works", () => {
+      const arr = new Arr([2, 4, 6, 8, 16]);
+      expect(arr.gcd).toEqual(2);
+    });
+  });
+
+  describe("lcm", () => {
+    test("does not work if arr includes non number", () => {
+      const arr = new Arr([1, 2, 3, "b"]);
+      let err = "";
+      try {
+        arr.lcm;
+      } catch (e) {
+        err = e.message;
+      }
+
+      expect(err).toEqual("Can only find LCM if all values are numbers");
+    });
+
+    test("works", () => {
+      const arr = new Arr([1, 2, 3, 4, 5]);
+      expect(arr.lcm).toEqual(60);
+    });
+  });
 });
