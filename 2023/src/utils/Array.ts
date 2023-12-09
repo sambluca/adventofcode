@@ -10,6 +10,10 @@ export class Arr extends Array {
     return Array;
   }
 
+  // returns last item in array
+  get last() {
+    return this[this.length - 1];
+  }
   // returns only unique items from array
   get unique() {
     return [...new Set(this)];
