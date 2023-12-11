@@ -199,7 +199,7 @@ describe("exercise2", () => {
     expect(res).toEqual(4);
   });
 
-  test.skip("data", () => {
+  test.skip("real data", () => {
     const res = exercise2(data);
 
     expect(res).toEqual(429);
