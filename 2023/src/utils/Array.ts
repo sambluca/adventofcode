@@ -78,9 +78,12 @@ export class Arr extends Array {
     }, {});
   }
 
+  // rotates a 2D array clockwise
   rotate() {
     return this.transpose().map((row) => row.reverse());
   }
+
+  // transposes a 2D array
   transpose() {
     const rows = this.length,
       cols = this[0].length;
@@ -141,6 +144,7 @@ export class Arr extends Array {
     return new Arr(shared);
   }
 
+  // checks if an array equals another array
   equals(compArr: Arr) {
     if (this == null || compArr == null) return false;
     if (this.length !== compArr.length) return false;

@@ -1,9 +1,5 @@
-import { exercise1, parse, exercise2, lineRefects, patternReflects } from ".";
+import { exercise1, parse, exercise2, lineReflects, patternReflects } from ".";
 import { data } from "./data";
-
-// check if i === next
-// if does check next row
-// if doesn't move on
 
 const mockData = `#.##..##.
 ..#.##.#.
@@ -49,7 +45,7 @@ describe("parse", () => {
 
 describe("lineReflects", () => {
   test("does not reflect", () => {
-    const res = lineRefects(
+    const res = lineReflects(
       [
         ["#", ".", "#", "#", ".", ".", "#", "#", "."],
         [".", ".", "#", ".", "#", "#", ".", "#", "."],
@@ -65,7 +61,7 @@ describe("lineReflects", () => {
     expect(res).toEqual(false);
   });
   test("does not reflect B", () => {
-    const res = lineRefects(
+    const res = lineReflects(
       [
         ["#", ".", ".", ".", "#", "#", ".", ".", "#"],
         ["#", ".", ".", ".", ".", "#", ".", ".", "#"],
@@ -82,7 +78,7 @@ describe("lineReflects", () => {
   });
 
   test("does reflect", () => {
-    const res = lineRefects(
+    const res = lineReflects(
       [
         ["#", ".", ".", ".", "#", "#", ".", ".", "#"],
         ["#", ".", ".", ".", ".", "#", ".", ".", "#"],
@@ -99,7 +95,7 @@ describe("lineReflects", () => {
   });
 
   test("edge 2", () => {
-    const res = lineRefects(
+    const res = lineReflects(
       [
         ["#", "#", ".", ".", ".", ".", "#", "#", "#"],
         [".", "#", ".", "#", ".", "#", ".", "#", "#"],
@@ -123,7 +119,7 @@ describe("lineReflects", () => {
 
   describe("smudge", () => {
     test("mockData pattern 1", () => {
-      const res = lineRefects(
+      const res = lineReflects(
         [
           ["#", ".", "#", "#", ".", ".", "#", "#", "."],
           [".", ".", "#", ".", "#", "#", ".", "#", "."],
@@ -141,7 +137,7 @@ describe("lineReflects", () => {
     });
 
     test("data 1", () => {
-      const res = lineRefects(
+      const res = lineReflects(
         parse(`####....####.#.##
       .....#..#.#...#.#
       #......##..#.###.
@@ -163,7 +159,7 @@ describe("lineReflects", () => {
       expect(res).toEqual(false);
     });
     test("data 12", () => {
-      const res = lineRefects(
+      const res = lineReflects(
         parse(`####....####.#.##
       .....#..#.#...#.#
       #......##..#.###.
@@ -185,7 +181,7 @@ describe("lineReflects", () => {
     });
 
     test("smudge2", () => {
-      const res = lineRefects(
+      const res = lineReflects(
         parse(`...#..#
   #.##..#
   #.##..#

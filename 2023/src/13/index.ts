@@ -3,7 +3,7 @@ import { Arr } from "../utils";
 export const parse = (text: string) =>
   text.split(/\n\n/).map((i) => i.split(/\n/).map((i) => i.split("")));
 
-export const lineRefects = (
+export const lineReflects = (
   pattern: Array<string[]>,
   startIndex: number,
   smudge?: boolean
@@ -15,7 +15,7 @@ export const lineRefects = (
 
   while (true) {
     if (rowAIndex === -1 || rowBIndex === pattern.length) {
-      if (smudge && smudgeFound) {
+      if (smudgeFound) {
         reflects = true;
       }
       break;
@@ -23,7 +23,7 @@ export const lineRefects = (
     const rowA = new Arr(pattern[rowAIndex]);
     const rowB = new Arr(pattern[rowBIndex]);
 
-    if (!smudge) {
+    if (!smudge || smudgeFound) {
       if (rowA.equals(rowB)) {
         reflects = true;
       } else {
@@ -31,24 +31,8 @@ export const lineRefects = (
         break;
       }
     } else {
-      if (
-        !smudgeFound &&
-        rowA.shallowDiffs(rowB, { orderMatters: true }).length === 2
-      ) {
+      if (rowA.shallowDiffs(rowB, { orderMatters: true }).length === 2) {
         smudgeFound = true;
-
-        rowAIndex -= 1;
-        rowBIndex += 1;
-        continue;
-      }
-
-      if (smudgeFound) {
-        if (rowA.equals(rowB)) {
-          reflects = true;
-        } else {
-          reflects = false;
-          break;
-        }
       } else {
         if (!rowA.equals(rowB)) {
           reflects = false;
@@ -73,7 +57,7 @@ export const patternReflects = (
   let val = 0;
 
   for (let i = 0; i < pattern.length; i++) {
-    if (lineRefects(pattern, i, smudge)) {
+    if (lineReflects(pattern, i, smudge)) {
       val = calc(i);
       break;
     }
@@ -83,28 +67,23 @@ export const patternReflects = (
 };
 export const exercise1 = (text: string) =>
   parse(text).reduce((acc, pattern, i) => {
-    const tranposed = new Arr(pattern).transpose();
     const h = patternReflects(pattern, "h");
 
     if (h !== 0) {
       return acc + h;
     }
+    const tranposed = new Arr(pattern).transpose();
     const v = patternReflects([...tranposed], "v");
     return acc + v;
   }, 0);
 
-export const exercise2 = (text: string) => {
-  const data = parse(text);
-  const patterns = data.map((pattern) => {
+export const exercise2 = (text: string) =>
+  parse(text).reduce((acc, pattern) => {
     const h = patternReflects(pattern, "h", true);
-
     if (h !== 0) {
-      return h;
+      return acc + h;
     }
     const tranposed = new Arr(pattern).transpose();
     const v = patternReflects([...tranposed], "v", true);
-    return v;
-  });
-
-  return patterns.reduce((acc, c) => acc + c, 0);
-};
+    return acc + v;
+  }, 0);
