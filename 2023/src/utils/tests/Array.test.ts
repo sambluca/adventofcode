@@ -141,6 +141,33 @@ describe("Array Class", () => {
     });
   });
 
+  describe("shallowDiffs", () => {
+    test("shallowDiffs", () => {
+      const arr = new Arr(["1", "3", "5", "J"]);
+      const arr2 = new Arr(["1", "4", "5", "6", "7"]);
+
+      expect(arr.shallowDiffs(arr2)).toEqual(["4", "6", "7", "3", "J"]);
+    });
+
+    test("order matters", () => {
+      const arr = new Arr(["#", ".", "#", "#", ".", ".", "#", "#", "."]);
+      const arr2 = new Arr([".", ".", "#", ".", "#", "#", ".", "#", "."]);
+
+      expect(arr.shallowDiffs(arr2, { orderMatters: true })).toEqual([
+        "#",
+        ".",
+        "#",
+        ".",
+        ".",
+        "#",
+        ".",
+        "#",
+        "#",
+        ".",
+      ]);
+    });
+  });
+
   describe("map", () => {
     test("returns as Arr", () => {
       const arr = new Arr(["1", "3", "5", "J", "J"]);

@@ -116,6 +116,31 @@ export class Arr extends Array {
     return new Arr(shared);
   }
 
+  // shallow compares all items in array returns diffs
+  shallowDiffs(compArr: Arr, options?: { orderMatters?: boolean }) {
+    const { orderMatters } = options || {};
+    const shared = [];
+
+    if (!orderMatters) {
+      compArr.forEach((compItem) => {
+        if (!this.includes(compItem)) shared.push(compItem);
+      });
+
+      this.forEach((compItem) => {
+        if (!compArr.includes(compItem)) shared.push(compItem);
+      });
+    } else {
+      this.forEach((compItem, i) => {
+        if (this[i] !== compArr[i]) {
+          shared.push(this[i]);
+          shared.push(compArr[i]);
+        }
+      });
+    }
+
+    return new Arr(shared);
+  }
+
   equals(compArr: Arr) {
     if (this == null || compArr == null) return false;
     if (this.length !== compArr.length) return false;
