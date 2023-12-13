@@ -216,4 +216,88 @@ describe("Array Class", () => {
       expect(arr.lcm).toEqual(60);
     });
   });
+
+  describe("transpose", () => {
+    test("1,2,3 | 1,2,3 | 1,2,3", () => {
+      const res = new Arr([
+        ["ccc", "fff", "iii"],
+        ["bbb", "eee", "hhh"],
+        ["aaa", "ddd", "ggg"],
+      ]);
+      expect(res.transpose()).toEqual([
+        ["ccc", "bbb", "aaa"],
+        ["fff", "eee", "ddd"],
+        ["iii", "hhh", "ggg"],
+      ]);
+    });
+
+    test("data", () => {
+      const res = new Arr([
+        ["#", ".", ".", ".", "#", "#", ".", ".", "#"],
+        ["#", ".", ".", ".", ".", "#", ".", ".", "#"],
+        [".", ".", "#", "#", ".", ".", "#", "#", "#"],
+        ["#", "#", "#", "#", "#", ".", "#", "#", "."],
+        ["#", "#", "#", "#", "#", ".", "#", "#", "."],
+        [".", ".", "#", "#", ".", ".", "#", "#", "#"],
+        ["#", ".", ".", ".", ".", "#", ".", ".", "#"],
+      ]).transpose();
+
+      expect(res).toEqual([
+        ["#", "#", ".", "#", "#", ".", "#"],
+        [".", ".", ".", "#", "#", ".", "."],
+        [".", ".", "#", "#", "#", "#", "."],
+        [".", ".", "#", "#", "#", "#", "."],
+        ["#", ".", ".", "#", "#", ".", "."],
+        ["#", "#", ".", ".", ".", ".", "#"],
+        [".", ".", "#", "#", "#", "#", "."],
+        [".", ".", "#", "#", "#", "#", "."],
+        ["#", "#", "#", ".", ".", "#", "#"],
+      ]);
+    });
+  });
+
+  describe("rotate", () => {
+    test("1,2,3 | 1,2,3 | 1,2,3", () => {
+      const res = new Arr([
+        ["ccc", "fff", "iii"],
+        ["bbb", "eee", "hhh"],
+        ["aaa", "ddd", "ggg"],
+      ]);
+      expect(res.rotate()).toEqual([
+        ["aaa", "bbb", "ccc"],
+        ["ddd", "eee", "fff"],
+        ["ggg", "hhh", "iii"],
+      ]);
+    });
+  });
+
+  describe("equals", () => {
+    test("does not equal", () => {
+      const arr = new Arr(["1", "3", "5", "J"]);
+      const arr2 = new Arr(["1", "4", "5", "6", "7"]);
+
+      expect(arr.equals(arr2)).toEqual(false);
+    });
+
+    test("does equal", () => {
+      const arr = new Arr(["1", "2", "3", "4"]);
+      const arr2 = new Arr(["1", "2", "3", "4"]);
+
+      expect(arr.equals(arr2)).toEqual(true);
+    });
+
+    test("equals", () => {
+      const arr = new Arr(["#", ".", ".", ".", "#", "#", ".", ".", "#"]);
+      const arr2 = new Arr(["#", ".", ".", ".", "#", "#", ".", ".", "#"]);
+
+      expect(arr.equals(arr2)).toEqual(true);
+    });
+
+    test("does care about order", () => {
+      const arr = new Arr(["1", "2", "4", "3"]);
+      const arr2 = new Arr(["1", "2", "3", "4"]);
+
+      expect(arr.equals(arr2)).toEqual(false);
+    });
+  });
 });

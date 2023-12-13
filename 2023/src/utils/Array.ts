@@ -78,6 +78,23 @@ export class Arr extends Array {
     }, {});
   }
 
+  rotate() {
+    return this.transpose().map((row) => row.reverse());
+  }
+  transpose() {
+    const rows = this.length,
+      cols = this[0].length;
+    const grid = [];
+    for (let j = 0; j < cols; j++) {
+      grid[j] = Array(rows);
+    }
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+        grid[j][i] = this[i][j];
+      }
+    }
+    return grid;
+  }
   // shallow search for item in array
   contains(search: any) {
     return this.includes(search);
@@ -97,6 +114,16 @@ export class Arr extends Array {
     });
 
     return new Arr(shared);
+  }
+
+  equals(compArr: Arr) {
+    if (this == null || compArr == null) return false;
+    if (this.length !== compArr.length) return false;
+
+    for (var i = 0; i < this.length; ++i) {
+      if (this[i] !== compArr[i]) return false;
+    }
+    return true;
   }
 
   // add to exisiting Array function so it will return an Arr type
