@@ -78,8 +78,13 @@ export class Arr extends Array {
     }, {});
   }
 
-  // rotates a 2D array clockwise
-  rotate() {
+  // rotates a 2D array clockwise by default, anticlockwise with a prop
+  rotate(props?: { dir?: "clockwise" | "anticlockwise" }) {
+    if (props && props.dir && props.dir === "anticlockwise") {
+      return this[0].map((val, index) =>
+        this.map((row) => row[row.length - 1 - index])
+      );
+    }
     return this.transpose().map((row) => row.reverse());
   }
 
