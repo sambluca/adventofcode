@@ -284,16 +284,29 @@ describe("Array Class", () => {
   });
 
   describe("rotate", () => {
-    test("1,2,3 | 1,2,3 | 1,2,3", () => {
+    test("clockwise", () => {
       const res = new Arr([
         ["ccc", "fff", "iii"],
         ["bbb", "eee", "hhh"],
         ["aaa", "ddd", "ggg"],
       ]);
-      expect(res.rotate()).toEqual([
+      expect(res.rotate({ dir: "clockwise" })).toEqual([
         ["aaa", "bbb", "ccc"],
         ["ddd", "eee", "fff"],
         ["ggg", "hhh", "iii"],
+      ]);
+    });
+
+    test("anticlockwise", () => {
+      const res = new Arr([
+        ["ccc", "fff", "iii"],
+        ["bbb", "eee", "hhh"],
+        ["aaa", "ddd", "ggg"],
+      ]);
+      expect(res.rotate({ dir: "anticlockwise" })).toEqual([
+        ["iii", "hhh", "ggg"],
+        ["fff", "eee", "ddd"],
+        ["ccc", "bbb", "aaa"],
       ]);
     });
   });
