@@ -1,4 +1,4 @@
-import { extrapolate, findDiffs } from "..";
+import { extrapolate, findDiffs, picksTheorom, shoelace } from "..";
 
 describe("findDiffs", () => {
   test("0 3 6 9 12 15", () => {
@@ -49,5 +49,41 @@ describe("extrapolate", () => {
     const res = extrapolate([10, 13, 16, 21, 30, 45].reverse());
 
     expect(res).toEqual(5);
+  });
+});
+
+describe("picks theorom", () => {
+  test("find interior points", () => {
+    const res = picksTheorom({ boundaryPoints: 8, area: 10 });
+
+    expect(res).toEqual(7);
+  });
+
+  test("find area", () => {
+    const res = picksTheorom({ boundaryPoints: 8, interiorPoints: 7 });
+
+    expect(res).toEqual(10);
+  });
+
+  test("find boundary points", () => {
+    const res = picksTheorom({ area: 10, interiorPoints: 7 });
+
+    expect(res).toEqual(8);
+  });
+});
+
+describe("shoelace", () => {
+  test("this example https://www.101computing.net/the-shoelace-algorithm/", () => {
+    const vertices: Array<[number, number]> = [
+      [2, 7],
+      [10, 1],
+      [8, 6],
+      [11, 7],
+      [7, 10],
+    ];
+
+    const res = shoelace(vertices);
+
+    expect(res).toEqual(32);
   });
 });

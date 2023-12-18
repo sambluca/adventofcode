@@ -7,7 +7,7 @@ export const between = (x: number, min: number, max: number) =>
 
 export const isOdd = (x: number) => !!(x % 2);
 
-// find greateset common divisor
+// find greatest common divisor
 export const findGcd = (a, b) => {
   if (a == 0) return b;
   return findGcd(b % a, a);
@@ -50,4 +50,37 @@ export const extrapolate = (numbers: number[]) => {
   return history.reverse().reduce((acc, curr) => {
     return acc + curr[curr.length - 1];
   }, 0);
+};
+
+// Shoelace formula -- https://www.101computing.net/the-shoelace-algorithm
+// The shoelace formula is a mathematical algorithm to determine the area of a simple polygon whose vertices are described by their Cartesian coordinates in the plane.
+// Area = (Xa * Yb) + (Xb * Yc) + (Xc * Ya)
+export const shoelace = (nums: Array<[number, number]>) =>
+  Math.abs(
+    nums.reduce((acc, curr, i) => {
+      const [lastX, lastY] = curr;
+      const [nextX, nextY] = nums[i + 1] || nums[0];
+
+      return acc + lastX * nextY - nextX * lastY;
+    }, 0) * 0.5
+  );
+
+// Picks theorom -- https://artofproblemsolving.com/wiki/index.php/Pick%27s_Theorem
+// Pick's Theorem expresses the area of a polygon, all of whose vertices are lattice points in a coordinate plane, in terms of the number of lattice points inside the polygon and the number of lattice points on the sides of the polygon
+// Area = InteriorPoints + \ 0.5BoundaryPoints - 1
+// This Area can be calculated using the shoe lace formula
+// returns whatever forumla variable is missing
+export const picksTheorom = ({
+  area,
+  boundaryPoints,
+  interiorPoints,
+}: {
+  area?: number;
+  boundaryPoints?: number;
+  interiorPoints?: number;
+}) => {
+  if (!interiorPoints) return Math.abs(area + 1 - 0.5 * boundaryPoints);
+  if (!area) return Math.abs(interiorPoints + 0.5 * boundaryPoints - 1);
+
+  return Math.abs((area + 1 - interiorPoints) * 2);
 };

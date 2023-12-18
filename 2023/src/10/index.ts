@@ -7,6 +7,8 @@
 // . is ground; there is no pipe in this tile.
 // S is the starting position of the animal; there is a pipe on this tile, but your sketch doesn't show what shape the pipe has.
 
+import { picksTheorom, shoelace } from "../utils";
+
 interface PipeCheck {
   coords: [number, number];
   pipe: string;
@@ -146,37 +148,7 @@ export const exercise2 = (text: string) => {
   const start = findStart(data);
   const paths = buildValidPath(data, start);
 
-  // All this should be extracted to it's own helper functions BUT
-  // a vague memory from A-Level/Uni led to lots of googling has led me to this -- shoelace formula and picks theorem
+  const area = shoelace(paths);
 
-  // Shoelace formula -- https://www.101computing.net/the-shoelace-algorithm
-  // The shoelace formula is a mathematical algorithm to determine the area of a simple polygon whose vertices are described by their Cartesian coordinates in the plane.
-  // find areaX --- (Xa * Yb) + (Xb * Yc) + (Xc * Ya)
-  const areaX = paths.reduce((acc, curr, i) => {
-    const compare = paths[i + 1] || paths[0];
-    return acc + curr[0] * compare[1];
-  }, 0);
-
-  // find areaY--- (Ya * Xb) + (Yb * Xc) + (Yc * Xa)
-  const areaY = paths.reduce((acc, curr, i) => {
-    const compare = paths[i + 1] || paths[0];
-
-    return acc + curr[1] * compare[0];
-  }, 0);
-
-  // minus them from each other
-  const areaAll = areaX - areaY;
-  // divide by half
-  const area = 0.5 * areaAll;
-
-  // this area is the area of the polygon that is the Maze that paths creates
-
-  // Picks theorom -- https://artofproblemsolving.com/wiki/index.php/Pick%27s_Theorem
-  // Pick's Theorem expresses the area of a polygon, all of whose vertices are lattice points in a coordinate plane, in terms of the number of lattice points inside the polygon and the number of lattice points on the sides of the polygon
-  // Area = InteriorPoints + \ 0.5BoundaryPoints - 1
-  // We know the area, we know the number of boundary points
-  // Simple equation rearraging leads to this
-  const res = area + 1 - 0.5 * paths.length;
-
-  return res;
+  return picksTheorom({ area, boundaryPoints: paths.length });
 };
