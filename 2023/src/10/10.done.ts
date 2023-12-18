@@ -36,7 +36,6 @@ describe("parse", () => {
   test("mockData", () => {
     const res = parse(mockData2);
 
-    console.log("res", res);
     expect(res).toEqual([
       ["7", "-", "F", "7", "-"],
       [".", "F", "J", "|", "7"],
@@ -151,18 +150,6 @@ describe("buildValidPath", () => {
       ])
     );
   });
-
-  // test("mockData", () => {
-  //   const res = findStart([
-  //     ["7", "-", "F", "7", "-"],
-  //     [".", "F", "J", "|", "7"],
-  //     ["S", "J", "L", "L", "7"],
-  //     ["|", "F", "-", "-", "J"],
-  //     ["L", "J", ".", "L", "J"],
-  //   ]);
-
-  //   expect(res).toEqual([2, 0]);
-  // });
 });
 describe("exercise1", () => {
   test("mockData", () => {
@@ -177,7 +164,7 @@ describe("exercise1", () => {
     expect(res).toEqual(8);
   });
 
-  test.skip("data", () => {
+  test("data", () => {
     const res = exercise1(data);
 
     expect(res).toEqual(6714);
@@ -199,7 +186,7 @@ describe("exercise2", () => {
     expect(res).toEqual(4);
   });
 
-  test.skip("real data", () => {
+  test("real data", () => {
     const res = exercise2(data);
 
     expect(res).toEqual(429);
