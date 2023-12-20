@@ -24,6 +24,9 @@ export const deepEqual = (
   return true;
 };
 
+export const deepCopy = (obj: { [key: string]: any }) =>
+  JSON.parse(JSON.stringify(obj));
+
 export const isObject = (val: any) => {
   return val != null && typeof val === "object";
 };
