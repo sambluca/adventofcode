@@ -85,6 +85,7 @@ export const picksTheorom = ({
   return Math.abs((area + 1 - interiorPoints) * 2);
 };
 
+// gets diff between two numbers regardless of which is larger
 export const getDiff = (item1: number, item2: number) => {
   if (item1 === item2) return 0;
   if (item1 > item2) return item1 - item2;

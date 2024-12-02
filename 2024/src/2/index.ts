@@ -1,4 +1,4 @@
-import { Arr, between, findDiffs, getDiff } from "../utils";
+import { findDiffs } from "../utils";
 
 export const parse = (text: string) =>
   text.split(/\n/).map((line) => line.split(" ").map(Number));
@@ -12,16 +12,11 @@ export const isSafe = (items: number[]) => {
   return increasing || decreasing;
 };
 
-export const exercise1 = (text: string) => {
-  const data = parse(text);
+export const exercise1 = (text: string) =>
+  parse(text).reduce((acc: number, line) => (isSafe(line) ? acc + 1 : acc), 0);
 
-  return data.reduce((acc: number, line) => (isSafe(line) ? acc + 1 : acc), 0);
-};
-
-export const exercise2 = (text: string) => {
-  const data = parse(text);
-
-  return data.reduce((acc: number, line) => {
+export const exercise2 = (text: string) =>
+  parse(text).reduce((acc: number, line) => {
     const lineIsSafe = isSafe(line);
     let problemDampended = false;
     for (let i = 0; i < line.length; i++) {
@@ -34,4 +29,3 @@ export const exercise2 = (text: string) => {
 
     return lineIsSafe || problemDampended ? acc + 1 : acc;
   }, 0);
-};

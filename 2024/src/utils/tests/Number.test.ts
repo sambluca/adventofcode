@@ -1,4 +1,4 @@
-import { extrapolate, findDiffs, picksTheorom, shoelace } from "..";
+import { extrapolate, findDiffs, getDiff, picksTheorom, shoelace } from "..";
 
 describe("findDiffs", () => {
   test("0 3 6 9 12 15", () => {
@@ -85,5 +85,20 @@ describe("shoelace", () => {
     const res = shoelace(vertices);
 
     expect(res).toEqual(32);
+  });
+});
+
+describe("getDiff", () => {
+  test("item1 larger than item2", () => {
+    const res = getDiff(10, 1);
+    expect(res).toEqual(9);
+  });
+  test("item2 larger than item1", () => {
+    const res = getDiff(1, 10);
+    expect(res).toEqual(9);
+  });
+  test("item1 the same as item2", () => {
+    const res = getDiff(10, 10);
+    expect(res).toEqual(0);
   });
 });

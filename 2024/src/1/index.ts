@@ -5,26 +5,21 @@ export const parse = (text: string) =>
     .split(/\n/)
     .map((line) => line.split(/[ ]+/))
     .reduce(
-      (acc: [number[], number[]], curr) => {
-        const [item1, item2] = curr;
-        const [list1, list2] = acc;
-
-        list1.push(Number(item1));
-        list2.push(Number(item2));
-
-        return [list1, list2];
-      },
+      ([list1, list2]: [number[], number[]], [item1, item2]) => [
+        [...list1, Number(item1)],
+        [...list2, Number(item2)],
+      ],
       [[], []]
     );
 
 export const exercise1 = (text: string) => {
   const [list1, list2] = parse(text);
 
-  const soretedList1 = list1.sort();
-  const soretedList2 = list2.sort();
+  const sortedList1 = list1.sort();
+  const sortedList2 = list2.sort();
 
-  return soretedList1.reduce((acc: number, list1Item, index) => {
-    const list2Item = soretedList2[index];
+  return sortedList1.reduce((acc: number, list1Item, index) => {
+    const list2Item = sortedList2[index];
     const distance = getDiff(list1Item, list2Item);
     return acc + distance;
   }, 0);
