@@ -141,17 +141,18 @@ export const exercise2 = (text: string) => {
   const data = parse(text);
 
   let xmasCount = 0;
-  data.forEach((line, lineIndex) => {
-    line.forEach((char, charIndex) => {
+  for (let [lineIndex, line] of data.entries()) {
+    for (let [charIndex, char] of line.entries()) {
       if (char === "A") {
         const upLine = data[lineIndex - 1];
         const downLine = data[lineIndex + 1];
 
-        const topLeft = upLine ? upLine[charIndex - 1] : "";
-        const downRight = downLine ? downLine[charIndex + 1] : "";
+        if (!upLine || !downLine) continue;
+        const topLeft = upLine[charIndex - 1];
+        const downRight = downLine[charIndex + 1];
 
-        const topRight = upLine ? upLine[charIndex + 1] : "";
-        const downLeft = downLine ? downLine[charIndex - 1] : "";
+        const topRight = upLine[charIndex + 1];
+        const downLeft = downLine[charIndex - 1];
 
         const leftToRight = new Arr([topLeft, downRight]).sort();
         const rightToLeft = new Arr([topRight, downLeft]).sort();
@@ -161,8 +162,8 @@ export const exercise2 = (text: string) => {
         if (leftToRight.equals(accepted) && rightToLeft.equals(accepted))
           xmasCount += 1;
       }
-    });
-  });
+    }
+  }
 
   return xmasCount;
 };
