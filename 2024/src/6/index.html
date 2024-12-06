@@ -242,6 +242,10 @@
       const startPoint = getGuardPoint(parsedData, "^");
       const visitedPoints = moveGuard(parsedData, "^", startPoint, new Set());
 
+      document.getElementById(
+        JSON.stringify({ x: startPoint[0], y: startPoint[1] })
+      ).textContent = "💂";
+
       console.log(visitedPoints.size);
     };
 
