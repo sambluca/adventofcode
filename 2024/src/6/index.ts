@@ -20,19 +20,6 @@ const moves = {
   v: { x: 0, y: 1 },
   "<": { x: -1, y: 0 },
 };
-const getGuardPoint = (data: string[][], dir: "^" | ">" | "v" | "<") => {
-  let x = 0;
-  let y = 0;
-
-  data.forEach((line, yIndex) => {
-    if (line.includes(dir)) {
-      x = line.findIndex((i) => i === dir);
-      y = yIndex;
-    }
-  });
-
-  return [x, y] as [number, number];
-};
 
 const moveGuard = (
   data: string[][],
@@ -133,7 +120,9 @@ const moveGuardWithObstacles = (
 
 export const exercise = (text: string, part: 1 | 2) => {
   const data = parse(text);
-  const startPoint = getGuardPoint(data, "^");
+
+  const startPoint = new Grid(data).getPoint("^");
+
   const visitedPoints = moveGuard(data, "^", startPoint, new Set<string>());
 
   if (part === 1) return visitedPoints.size;
