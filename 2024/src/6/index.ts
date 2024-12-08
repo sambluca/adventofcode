@@ -1,3 +1,5 @@
+import { Grid } from "../utils/Grid";
+
 export const parse = (text: string) => text.split(/\n/).map((i) => i.split(""));
 
 const dirs: {
@@ -83,6 +85,7 @@ const moveGuardWithObstacles = (
   [x, y]: [number, number],
   visitedPoints: Set<string>
 ) => {
+  const grid = new Grid(data);
   const move = moves[dir];
   let nextX = x;
   let nextY = y;
@@ -103,12 +106,7 @@ const moveGuardWithObstacles = (
     nextX += move.x;
     nextY += move.y;
 
-    if (
-      nextX === -1 ||
-      nextX === data[0].length ||
-      nextY === -1 ||
-      nextY === data.length
-    ) {
+    if (!grid.getInBounds([nextX, nextY])) {
       inBoundary = false;
       break;
     }

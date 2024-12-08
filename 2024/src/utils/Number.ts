@@ -92,3 +92,6 @@ export const getDiff = (item1: number, item2: number) => {
 
   return item2 - item1;
 };
+
+export const makePositive = (item: number) => Math.abs(item);
+export const makeNegative = (item: number) => Math.abs(item) * -1;
