@@ -7,10 +7,10 @@ export const getPath = (
   coord: Coord,
   value: number,
   grid: Grid<number>,
-  paths: Coord[]
+  paths: string[]
 ) => {
   let newPaths = [...paths];
-  if (value === 9) return [...newPaths, coord];
+  if (value === 9) return [...newPaths, coord.join("-")];
   const { north, east, south, west } = grid.getSurroundingValues(coord);
 
   if (north.value === value + 1)
@@ -36,8 +36,7 @@ export const exercise = (text: string, part2?: boolean) => {
       acc +
       (part2
         ? getPath(trail, 0, grid, []).length
-        : new Set(getPath(trail, 0, grid, []).map((i) => JSON.stringify(i)))
-            .size),
+        : new Set(getPath(trail, 0, grid, [])).size),
     0
   );
 };
