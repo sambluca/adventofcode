@@ -1,4 +1,3 @@
-import { Arr } from "../utils";
 import { Coord, Grid } from "../utils/Grid";
 
 export const parse = (text: string) =>
@@ -7,7 +6,7 @@ export const parse = (text: string) =>
 export const getPath = (
   coord: Coord,
   value: number,
-  grid: Grid,
+  grid: Grid<number>,
   paths: Coord[]
 ) => {
   let newPaths = [...paths];
@@ -29,19 +28,16 @@ export const getPath = (
   return newPaths;
 };
 export const exercise = (text: string, part2?: boolean) => {
-  const data = parse(text);
-
-  const grid = new Grid(data);
+  const grid = new Grid(parse(text));
   const trailheads = grid.getAllPoints(0);
 
-  return trailheads.reduce((acc: number, trail) => {
-    const values = getPath(trail, 0, grid, []);
-
-    return (
+  return trailheads.reduce(
+    (acc: number, trail) =>
       acc +
       (part2
-        ? values.length
-        : [...new Set(values.map((i) => JSON.stringify(i)))].length)
-    );
-  }, 0);
+        ? getPath(trail, 0, grid, []).length
+        : new Set(getPath(trail, 0, grid, []).map((i) => JSON.stringify(i)))
+            .size),
+    0
+  );
 };

@@ -1,20 +1,18 @@
 export type Coord = [number, number];
-
-type Value = string | number;
-interface Surrounding {
-  north: { value: Value; coord: Coord };
-  northEast: { value: Value; coord: Coord };
-  east: { value: Value; coord: Coord };
-  southEast: { value: Value; coord: Coord };
-  south: { value: Value; coord: Coord };
-  southWest: { value: Value; coord: Coord };
-  west: { value: Value; coord: Coord };
-  northWest: { value: Value; coord: Coord };
+interface Surrounding<T> {
+  north: { value: T; coord: Coord };
+  northEast: { value: T; coord: Coord };
+  east: { value: T; coord: Coord };
+  southEast: { value: T; coord: Coord };
+  south: { value: T; coord: Coord };
+  southWest: { value: T; coord: Coord };
+  west: { value: T; coord: Coord };
+  northWest: { value: T; coord: Coord };
 }
 
-export class Grid {
-  grid: Array<Value>[];
-  constructor(grid: Array<Value>[]) {
+export class Grid<V extends string | number> {
+  grid: Array<V>[];
+  constructor(grid: Array<V>[]) {
     this.grid = grid;
   }
 
@@ -33,7 +31,7 @@ export class Grid {
     return true;
   }
 
-  getPoint<T extends Value>(check: T) {
+  getPoint<T extends V>(check: T) {
     let foundX = 0;
     let foundY = 0;
 
@@ -55,22 +53,20 @@ export class Grid {
     return undefined;
   }
 
-  getAllPoints<T extends Value>(check: T) {
+  getAllPoints<T extends V>(check: T) {
     const points: Coord[] = [];
     this.grid.forEach((line, yIndex) => {
-      if (line.includes(check)) {
-        line.forEach((value, xIndex) => {
-          if (value === check) {
-            points.push([xIndex, yIndex]);
-          }
-        });
-      }
+      line.forEach((value, xIndex) => {
+        if (value === check) {
+          points.push([xIndex, yIndex]);
+        }
+      });
     });
 
     return points;
   }
 
-  getSurroundingValues([x, y]: Coord): Surrounding {
+  getSurroundingValues([x, y]: Coord): Surrounding<V> {
     const north: Coord = [x, y - 1];
     const northEast: Coord = [x + 1, y - 1];
     const east: Coord = [x + 1, y];
