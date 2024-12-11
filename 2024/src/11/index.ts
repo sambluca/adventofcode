@@ -1,4 +1,4 @@
-import { splitHalf, sum } from "../utils";
+import { Arr, splitHalf, sum } from "../utils";
 import { memoize } from "../utils/memoize";
 
 const calculateStone = memoize((stone: number) => {
@@ -35,5 +35,5 @@ const parseStones = (stones: Map<number, number>) => {
 export const exercise = (text: string, loops: number) => {
   let data = parse(text);
   for (let i = 0; i < loops; ++i) data = parseStones(data);
-  return sum([...data.values()]);
+  return new Arr([...data.values()]).sum();
 };

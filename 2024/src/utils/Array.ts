@@ -160,6 +160,10 @@ export class Arr extends Array {
     return true;
   }
 
+  sum() {
+    return this.reduce((acc, item) => acc + Number(item), 0);
+  }
+
   // add to exisiting Array function so it will return an Arr type
   map(...args) {
     return new Arr([...super.map.apply(this, args)]);
