@@ -1,55 +1,39 @@
+import { splitHalf, sum } from "../utils";
 import { memoize } from "../utils/memoize";
 
 const calculateStone = memoize((stone: number) => {
   if (stone === 0) return [1];
-  if (stone.toString().length % 2 === 0) {
-    const half1 = stone.toString().substring(0, stone.toString().length / 2);
-    const half2 = stone.toString().substring(stone.toString().length / 2);
-
-    return [Number(half1), Number(half2)];
-  }
-
+  if (String(stone).length % 2 === 0) return splitHalf(stone);
   return [stone * 2024];
 });
 
 export const parse = (text: string) => {
-  const stones = text.split(" ").map(Number);
-
   const stonesMap = new Map<number, number>();
-
-  stones.forEach((stone) => {
-    const value = stonesMap.get(stone) ?? 0;
-    stonesMap.set(stone, value + 1);
-  });
-
+  text
+    .split(" ")
+    .map(Number)
+    .forEach((stone) => {
+      const value = stonesMap.get(stone) ?? 0;
+      stonesMap.set(stone, value + 1);
+    });
   return stonesMap;
 };
 
 const parseStones = (stones: Map<number, number>) => {
-  const nextStones = new Map<number, number>();
-
-  const addCount = (stone: number, count: number) => {
-    const value = nextStones.get(stone) || 0;
-    nextStones.set(stone, value + count);
-  };
-
+  const calculatedStones = new Map<number, number>();
   for (const [stone, count] of stones) {
-    const nextStones = calculateStone(stone);
-    nextStones.forEach((newStone) => {
-      addCount(newStone, count);
+    calculateStone(stone).forEach((newStone) => {
+      calculatedStones.set(
+        newStone,
+        (calculatedStones.get(newStone) ?? 0) + count
+      );
     });
   }
-
-  return nextStones;
+  return calculatedStones;
 };
 
 export const exercise = (text: string, loops: number) => {
-  const data = parse(text);
-
-  let stones = new Map(data);
-  for (let i = 0; i < loops; ++i) {
-    stones = parseStones(stones);
-  }
-
-  return [...stones].reduce((acc, [, count]) => acc + count, 0);
+  let data = parse(text);
+  for (let i = 0; i < loops; ++i) data = parseStones(data);
+  return sum([...data.values()]);
 };

@@ -95,3 +95,14 @@ export const getDiff = (item1: number, item2: number) => {
 
 export const makePositive = (item: number) => Math.abs(item);
 export const makeNegative = (item: number) => Math.abs(item) * -1;
+
+export const sum = (numbers: number[]) =>
+  numbers.reduce((acc, num) => acc + num, 0);
+
+export const splitHalf = (value: number) => {
+  const string = String(value);
+  const half1 = Number(string.slice(0, string.length / 2));
+  const half2 = Number(string.slice(string.length / 2));
+
+  return [half1, half2];
+};

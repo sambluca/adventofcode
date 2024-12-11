@@ -24,7 +24,7 @@ describe("exercise2", () => {
     expect(res).toEqual(65601038650482);
   });
 
-  test.only("data", () => {
+  test("data", () => {
     const res = exercise(data, 75);
 
     expect(res).toEqual(270673834779359);
