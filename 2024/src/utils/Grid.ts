@@ -68,12 +68,13 @@ export class Grid<V extends string | number> {
 
   getSurroundingValues([x, y]: Coord): Surrounding<V> {
     const north: Coord = [x, y - 1];
-    const northEast: Coord = [x + 1, y - 1];
     const east: Coord = [x + 1, y];
-    const southEast: Coord = [x + 1, y + 1];
     const south: Coord = [x, y + 1];
-    const southWest: Coord = [x - 1, y + 1];
     const west: Coord = [x - 1, y];
+
+    const northEast: Coord = [x + 1, y - 1];
+    const southEast: Coord = [x + 1, y + 1];
+    const southWest: Coord = [x - 1, y + 1];
     const northWest: Coord = [x - 1, y - 1];
 
     return {
