@@ -1,8 +1,35 @@
-import { picksTheorom, shoelace } from "../utils";
 import { Coord, Grid } from "../utils/Grid";
 
 export const parse = (text: string) => text.split(/\n/).map((i) => i.split(""));
 
+const emojiToUse = {
+  A: "🟥",
+  B: "🟧",
+  C: "🟨",
+  D: "🟩",
+  E: "🟦",
+  F: "🟪",
+  G: "⬛️",
+  H: "⬜️",
+  I: "🟫",
+  J: "🍏",
+  K: "🍎",
+  L: "🍐",
+  M: "🍊",
+  N: "🍋‍🟩",
+  O: "🍋",
+  P: "🍌",
+  Q: "🍉",
+  R: "🍇",
+  S: "🍓",
+  T: "🫐",
+  U: "🍈",
+  V: "🥑",
+  W: "🫛",
+  X: "🥬",
+  Y: "🍞",
+  Z: "🫚",
+};
 const flood = (
   grid: Grid<string>,
   [x, y]: Coord,
@@ -29,7 +56,8 @@ const flood = (
   }
 
   replaced.push([x, y]);
-  grid.grid[y][x] = "🟨";
+  // grid.grid[y][x] = "🟨";
+  grid.grid[y][x] = emojiToUse[search];
 
   const {
     north: { coord: north },
@@ -52,11 +80,14 @@ const getRegions = (data: string[][]) => {
   const regions: [Coord[], Set<string>][] = [];
   grid.grid.forEach((row, y) => {
     row.forEach((value, x) => {
-      if (value !== "🟨")
+      // if (value !== "🟨")
+      if (!Object.values(emojiToUse).includes(value))
         regions.push(flood(grid, [x, y], value, [], new Set<string>(), [x, y]));
     });
   });
 
+  // grid.copy();
+  // grid.print();
   return regions;
 };
 

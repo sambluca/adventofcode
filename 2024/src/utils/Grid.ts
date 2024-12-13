@@ -20,6 +20,16 @@ export class Grid<V extends string | number> {
     return Grid;
   }
 
+  print() {
+    console.log(this.grid.map((i) => i.join("")).join("\n"));
+  }
+
+  // copy to clipboard
+  copy() {
+    var proc = require("child_process").spawn("pbcopy");
+    proc.stdin.write(this.grid.map((i) => i.join("")).join("\n"));
+    proc.stdin.end();
+  }
   valueOf() {
     return this.grid;
   }
