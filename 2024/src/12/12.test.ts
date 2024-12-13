@@ -1,6 +1,5 @@
 import { exercise1, parse, exercise2 } from ".";
 import { data } from "./data";
-import { part2 } from "./try";
 
 const mockData = `OOOOO
 OXOXO
@@ -45,19 +44,20 @@ MMMISSJEEE`);
   });
 });
 
-describe.skip("exercise2", () => {
+describe("exercise2", () => {
   test("mockData", () => {
-    const res = exercise2(`AAAA
+    const mockData2 = `AAAA
 BBCD
 BBCC
-EEEC`);
+EEEC`;
+    const res = exercise2(mockData2);
 
     expect(res).toEqual(80);
   });
 
-  test.skip("data", () => {
+  test("data", () => {
     const res = exercise2(data);
 
-    expect(res).toEqual(1396562);
+    expect(res).toEqual(844132);
   });
 });

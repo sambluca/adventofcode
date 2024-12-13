@@ -9,26 +9,27 @@ const flood = (
   search: string,
   replaced: Coord[],
   perimeter: Coord[],
-  set: Set<string>,
+  edges: Set<string>,
+  [prevX, prevY]: Coord,
   dir?: "north" | "south" | "east" | "west"
 ): [Coord[], Coord[], Set<string>] => {
   // if we're out of bounds we're at at an edge
   if (!grid.getInBounds([x, y])) {
     perimeter.push([x, y]);
-    set.add(`${x},${y} - ${dir}`);
-    return [replaced, perimeter, set];
+    edges.add(`${search}-${prevX}-${prevY}-${dir}`);
+    return [replaced, perimeter, edges];
   }
 
   // if we've already found the value then we're not hitting an edge
   if (replaced.find(([rX, rY]) => rX === x && rY === y)) {
-    return [replaced, perimeter, set];
+    return [replaced, perimeter, edges];
   }
 
   // if the grid value doesn't equal the value we're searching for we've hit an internal edge
   if (grid.grid[y][x] !== search) {
-    perimeter.push([x, y]);
-    set.add(`${x},${y} - ${dir}`);
-    return [replaced, perimeter, set];
+    // perimeter.push([x, y]);
+    edges.add(`${search}-${prevX}-${prevY}-${dir}`);
+    return [replaced, perimeter, edges];
   }
 
   replaced.push([x, y]);
@@ -47,7 +48,8 @@ const flood = (
     search,
     replaced,
     perimeter,
-    set,
+    edges,
+    [x, y],
     "north"
   );
   replaced = northR;
@@ -59,7 +61,8 @@ const flood = (
     search,
     replaced,
     perimeter,
-    set,
+    edges,
+    [x, y],
     "south"
   );
   replaced = southR;
@@ -71,7 +74,8 @@ const flood = (
     search,
     replaced,
     perimeter,
-    set,
+    edges,
+    [x, y],
     "west"
   );
   replaced = westR;
@@ -82,13 +86,14 @@ const flood = (
     search,
     replaced,
     perimeter,
-    set,
+    edges,
+    [x, y],
     "east"
   );
   replaced = eastR;
   perimeter = eastP;
 
-  return [replaced, perimeter, set];
+  return [replaced, perimeter, edges];
 };
 
 const getRegions = (data: string[][]) => {
@@ -98,135 +103,54 @@ const getRegions = (data: string[][]) => {
   grid.grid.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== "🟨")
-        regions.push(flood(grid, [x, y], value, [], [], new Set<string>()));
+        regions.push(
+          flood(grid, [x, y], value, [], [], new Set<string>(), [x, y])
+        );
     });
   });
 
   return regions;
 };
 export const exercise1 = (text: string) =>
-  getRegions(parse(text)).reduce(
-    (acc: number, [region, perimeter]) =>
-      acc + region.length * perimeter.length,
-    0
-  );
-
-// const getSides = (coords: Coord[]) => {
-//   console.log(coords);
-//   const grid = new Grid(coords);
-//   let sides = 0;
-//   let unique = true;
-//   let checking = coords[0];
-//   const checked = [];
-
-//   let dir: "east" | "south" | "north" | "west" = "east";
-
-//   const changeDir = (newD: "east" | "south" | "north" | "west") => {
-//     if (newD !== dir) {
-//       sides += 1;
-//       dir = newD;
-//     }
-//   };
-//   while (unique) {
-//     const surrounding = grid.getSurroundingValues(checking);
-//     if (checked.includes(JSON.stringify(checking))) {
-//       unique = false;
-//     }
-//     if (
-//       coords.find(
-//         (i) => JSON.stringify(i) === JSON.stringify(surrounding.east.coord)
-//       )
-//     ) {
-//       changeDir("east");
-//       checked.push(JSON.stringify(checking));
-//       checking = surrounding.east.coord;
-//       continue;
-//     }
-//     if (
-//       coords.find(
-//         (i) => JSON.stringify(i) === JSON.stringify(surrounding.west.coord)
-//       )
-//     ) {
-//       changeDir("west");
-//       checked.push(JSON.stringify(checking));
-//       checking = surrounding.west.coord;
-//       continue;
-//     }
-
-//     if (
-//       coords.find(
-//         (i) => JSON.stringify(i) === JSON.stringify(surrounding.south.coord)
-//       )
-//     ) {
-//       changeDir("south");
-//       checked.push(JSON.stringify(checking));
-//       checking = surrounding.south.coord;
-//       continue;
-//     }
-
-//     if (
-//       coords.find(
-//         (i) => JSON.stringify(i) === JSON.stringify(surrounding.north.coord)
-//       )
-//     ) {
-//       changeDir("north");
-//       checked.push(JSON.stringify(checking));
-//       checking = surrounding.north.coord;
-//       continue;
-//     }
-
-//     if (
-//       coords.find(
-//         (i) => JSON.stringify(i) === JSON.stringify(surrounding.northEast.coord)
-//       )
-//     ) {
-//       changeDir("north");
-//       checked.push(JSON.stringify(checking));
-//       checking = surrounding.northEast.coord;
-//       continue;
-//     }
-//     if (
-//       coords.find(
-//         (i) => JSON.stringify(i) === JSON.stringify(surrounding.northWest.coord)
-//       )
-//     ) {
-//       changeDir("north");
-//       checked.push(JSON.stringify(checking));
-//       checking = surrounding.northEast.coord;
-//       continue;
-//     }
-
-//     if (
-//       coords.find(
-//         (i) => JSON.stringify(i) === JSON.stringify(surrounding.southEast.coord)
-//       )
-//     ) {
-//       changeDir("south");
-//       checked.push(JSON.stringify(checking));
-//       checking = surrounding.northEast.coord;
-//       continue;
-//     }
-
-//     if (
-//       coords.find(
-//         (i) => JSON.stringify(i) === JSON.stringify(surrounding.southWest.coord)
-//       )
-//     ) {
-//       changeDir("south");
-//       checked.push(JSON.stringify(checking));
-//       checking = surrounding.northEast.coord;
-//       continue;
-//     }
-
-//     unique = false;
-//   }
-//   return sides;
-// };
-export const exercise2 = (text: string) => {
-  const regions = getRegions(parse(text));
-  console.log("regions", regions[0]);
-
-  return regions.reduce((acc: number, [region, perimeter]) => {
-    return acc + region.length * perimeter.length;
+  getRegions(parse(text)).reduce((acc: number, [region, perimeter, edges]) => {
+    return acc + region.length * edges.size;
   }, 0);
+
+const getCorners = (e: Set<string>) => {
+  const edges = new Set(e);
+  let corners = 0;
+  for (let edge of edges) {
+    const [search, xs, ys, dir] = edge.split("-");
+    const x = Number(xs);
+    const y = Number(ys);
+
+    if (dir === "south" && !edges.has(`${search}-${x - 1}-${y}-south`)) {
+      corners += 1;
+      continue;
+    }
+
+    if (dir === "north" && !edges.has(`${search}-${x + 1}-${y}-north`)) {
+      corners += 1;
+      continue;
+    }
+
+    if (dir === "east" && !edges.has(`${search}-${x}-${y + 1}-east`)) {
+      corners += 1;
+      continue;
+    }
+
+    if (dir === "west" && !edges.has(`${search}-${x}-${y - 1}-west`)) {
+      corners += 1;
+      continue;
+    }
+  }
+
+  return corners;
 };
+
+export const exercise2 = (text: string) =>
+  getRegions(parse(text)).reduce((acc: number, [region, perimeter, edges]) => {
+    const corners = getCorners(edges);
+    const value = region.length * corners;
+    return acc + value;
+  }, 0);
