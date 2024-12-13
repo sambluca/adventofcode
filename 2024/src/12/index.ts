@@ -8,28 +8,24 @@ const flood = (
   [x, y]: Coord,
   search: string,
   replaced: Coord[],
-  perimeter: Coord[],
   edges: Set<string>,
   [prevX, prevY]: Coord,
   dir?: "north" | "south" | "east" | "west"
-): [Coord[], Coord[], Set<string>] => {
+): [Coord[], Set<string>] => {
   // if we're out of bounds we're at at an edge
   if (!grid.getInBounds([x, y])) {
-    perimeter.push([x, y]);
     edges.add(`${search}-${prevX}-${prevY}-${dir}`);
-    return [replaced, perimeter, edges];
+    return [replaced, edges];
   }
 
   // if we've already found the value then we're not hitting an edge
-  if (replaced.find(([rX, rY]) => rX === x && rY === y)) {
-    return [replaced, perimeter, edges];
-  }
+  if (replaced.find(([rX, rY]) => rX === x && rY === y))
+    return [replaced, edges];
 
   // if the grid value doesn't equal the value we're searching for we've hit an internal edge
   if (grid.grid[y][x] !== search) {
-    // perimeter.push([x, y]);
     edges.add(`${search}-${prevX}-${prevY}-${dir}`);
-    return [replaced, perimeter, edges];
+    return [replaced, edges];
   }
 
   replaced.push([x, y]);
@@ -42,82 +38,34 @@ const flood = (
     east: { coord: east },
   } = grid.getSurroundingValues([x, y]);
 
-  const [northR, northP] = flood(
-    grid,
-    north,
-    search,
-    replaced,
-    perimeter,
-    edges,
-    [x, y],
-    "north"
-  );
-  replaced = northR;
-  perimeter = northP;
+  replaced = flood(grid, north, search, replaced, edges, [x, y], "north")[0];
+  replaced = flood(grid, south, search, replaced, edges, [x, y], "south")[0];
+  replaced = flood(grid, west, search, replaced, edges, [x, y], "west")[0];
+  replaced = flood(grid, east, search, replaced, edges, [x, y], "east")[0];
 
-  const [southR, southP] = flood(
-    grid,
-    south,
-    search,
-    replaced,
-    perimeter,
-    edges,
-    [x, y],
-    "south"
-  );
-  replaced = southR;
-  perimeter = southP;
-
-  const [westR, westP] = flood(
-    grid,
-    west,
-    search,
-    replaced,
-    perimeter,
-    edges,
-    [x, y],
-    "west"
-  );
-  replaced = westR;
-  perimeter = westP;
-  const [eastR, eastP] = flood(
-    grid,
-    east,
-    search,
-    replaced,
-    perimeter,
-    edges,
-    [x, y],
-    "east"
-  );
-  replaced = eastR;
-  perimeter = eastP;
-
-  return [replaced, perimeter, edges];
+  return [replaced, edges];
 };
 
 const getRegions = (data: string[][]) => {
   let grid = new Grid(data);
 
-  const regions: [Coord[], Coord[], Set<string>][] = [];
+  const regions: [Coord[], Set<string>][] = [];
   grid.grid.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== "🟨")
-        regions.push(
-          flood(grid, [x, y], value, [], [], new Set<string>(), [x, y])
-        );
+        regions.push(flood(grid, [x, y], value, [], new Set<string>(), [x, y]));
     });
   });
 
   return regions;
 };
+
 export const exercise1 = (text: string) =>
-  getRegions(parse(text)).reduce((acc: number, [region, perimeter, edges]) => {
+  getRegions(parse(text)).reduce((acc: number, [region, edges]) => {
     return acc + region.length * edges.size;
   }, 0);
 
-const getCorners = (e: Set<string>) => {
-  const edges = new Set(e);
+const getCorners = (edges: Set<string>) => {
   let corners = 0;
   for (let edge of edges) {
     const [search, xs, ys, dir] = edge.split("-");
@@ -149,8 +97,7 @@ const getCorners = (e: Set<string>) => {
 };
 
 export const exercise2 = (text: string) =>
-  getRegions(parse(text)).reduce((acc: number, [region, perimeter, edges]) => {
-    const corners = getCorners(edges);
-    const value = region.length * corners;
-    return acc + value;
-  }, 0);
+  getRegions(parse(text)).reduce(
+    (acc: number, [region, edges]) => acc + region.length * getCorners(edges),
+    0
+  );
