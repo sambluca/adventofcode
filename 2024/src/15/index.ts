@@ -6,12 +6,17 @@ export const parse = (
 ): [string[][], (">" | "<" | "^" | "v")[]] => {
   const [g, i] = text.split(/\n\n/);
   const convertGrid = (nG) => nG.split("\n").map((x) => x.split(""));
-  const nG = g
-    .replaceAll("#", "##")
-    .replaceAll(".", "..")
-    .replaceAll("@", "@.")
-    .replaceAll("O", "[]");
-  const grid = convertGrid(part2 ? nG : g);
+
+  const grid = convertGrid(
+    part2
+      ? g
+          .replaceAll("#", "##")
+          .replaceAll(".", "..")
+          .replaceAll("@", "@.")
+          .replaceAll("O", "[]")
+      : g
+  );
+
   const instructions = i.split("").filter((i) => i !== "\n") as unknown as (
     | ">"
     | "<"
@@ -85,14 +90,25 @@ export const exercise1 = (text: string) => {
   return grid.getAllPoints("O").reduce(sumBoulders, 0);
 };
 
+const sorts: {
+  [key: string]: (
+    a: { right: Coord; left: Coord },
+    b: { right: Coord; left: Coord }
+  ) => number;
+} = {
+  v: ({ right: [, aY] }, { right: [, bY] }) => (aY > bY ? -1 : 1),
+  "^": ({ right: [, aY] }, { right: [, bY] }) => (aY > bY ? 1 : -1),
+  ">": ({ right: [aX] }, { right: [bX] }) => (aX < bX ? 1 : -1),
+  "<": ({ right: [aX] }, { right: [bX] }) => (aX < bX ? -1 : 1),
+};
+
 const getLargeBoulders = (
   grid: Grid<string>,
   [cX, cY]: Coord,
   [mX, mY]: Coord,
-  b: { left: Coord; right: Coord }[],
+  boulders: { left: Coord; right: Coord }[],
   dir: ">" | "<" | "^" | "v"
 ) => {
-  let boulders = [...b];
   const nextValue = grid.getValue([cX, cY]);
 
   if (nextValue === "#") return [];
@@ -100,86 +116,41 @@ const getLargeBoulders = (
     return boulders;
   }
 
-  if (dir === "<") {
-    const left = [cX + mX, cY] as Coord;
-    const right = [cX, cY] as Coord;
+  if (dir === "<" || dir === ">") {
+    const lX = dir === "<" ? cX + mX : cX;
+    const rX = dir === "<" ? cX : cX + mX;
+
+    const left = [lX, cY] as Coord;
+    const right = [rX, cY] as Coord;
 
     boulders.push({ right, left });
-    const move = mX * 2;
-    // console.log("cX", cX);
-    // console.log("cX - 2", cX - 2);
 
-    // console.log("cX - move", cX + move);
-
-    // console.log(cX);
-
-    // console.log(cX - move);
-    // console.log(cX - 2);
-
-    return getLargeBoulders(grid, [cX + move, cY], [mX, mY], boulders, dir);
+    return getLargeBoulders(grid, [cX + mX * 2, cY], [mX, mY], boulders, dir);
   }
 
-  if (dir === ">") {
-    const left = [cX, cY] as Coord;
-    const right = [cX + 1, cY] as Coord;
+  const middle = [cX, cY] as Coord;
+  const left = [cX - 1, cY] as Coord;
+  const right = [cX + 1, cY] as Coord;
 
-    boulders.push({ right, left });
-    return getLargeBoulders(grid, [cX + 2, cY], [mX, mY], boulders, dir);
+  const mV = grid.getValue(middle);
+
+  if (mV === "[") {
+    boulders.push({ left: middle, right });
+
+    boulders = getLargeBoulders(grid, [cX, cY + mY], [mX, mY], boulders, dir);
+    if (boulders.length === 0) return [];
+    return getLargeBoulders(grid, [cX + 1, cY + mY], [mX, mY], boulders, dir);
   }
 
-  if (dir === "^") {
-    const middle = [cX, cY] as Coord;
-    const left = [cX - 1, cY] as Coord;
-    const right = [cX + 1, cY] as Coord;
+  if (mV === "]") {
+    boulders.push({ right: middle, left });
 
-    const mV = grid.getValue(middle);
-
-    if (mV === "[") {
-      boulders.push({ left: middle, right });
-
-      boulders = getLargeBoulders(grid, [cX, cY - 1], [mX, mY], boulders, dir);
-      if (boulders.length === 0) return [];
-      return getLargeBoulders(grid, [cX + 1, cY - 1], [mX, mY], boulders, dir);
-    }
-
-    if (mV === "]") {
-      boulders.push({ right: middle, left });
-
-      boulders = getLargeBoulders(grid, [cX, cY + mY], [mX, mY], boulders, dir);
-      if (boulders.length === 0) return [];
-
-      return getLargeBoulders(grid, [cX - 1, cY + mY], [mX, mY], boulders, dir);
-    }
+    boulders = getLargeBoulders(grid, [cX, cY + mY], [mX, mY], boulders, dir);
+    if (boulders.length === 0) return [];
+    return getLargeBoulders(grid, [cX - 1, cY + mY], [mX, mY], boulders, dir);
   }
 
-  if (dir === "v") {
-    const middle = [cX, cY] as Coord;
-    const left = [cX - 1, cY] as Coord;
-    const right = [cX + 1, cY] as Coord;
-
-    const lV = grid.getValue(left);
-    const mV = grid.getValue(middle);
-    const rV = grid.getValue(right);
-
-    if (mV === "[") {
-      boulders.push({ left: middle, right });
-
-      boulders = getLargeBoulders(grid, [cX, cY + 1], [mX, mY], boulders, dir);
-      if (boulders.length === 0) return [];
-
-      return getLargeBoulders(grid, [cX + 1, cY + 1], [mX, mY], boulders, dir);
-    }
-
-    if (mV === "]") {
-      boulders.push({ right: middle, left });
-
-      boulders = getLargeBoulders(grid, [cX, cY + mY], [mX, mY], boulders, dir);
-      if (boulders.length === 0) return [];
-
-      return getLargeBoulders(grid, [cX - 1, cY + mY], [mX, mY], boulders, dir);
-    }
-  }
-  return getLargeBoulders(grid, [cX + mX, cY + mY], [mX, mY], boulders, dir);
+  return boulders;
 };
 
 export const exercise2 = (text: string) => {
@@ -194,7 +165,12 @@ export const exercise2 = (text: string) => {
     const [nX, nY] = [x + mX, y + mY] as Coord;
     const nextValue = grid.getValue([nX, nY]);
 
-    if (nextValue === "[" || nextValue === "]" || instruction === "^") {
+    if (
+      nextValue === "[" ||
+      nextValue === "]" ||
+      instruction === "^" ||
+      instruction === "v"
+    ) {
       const bouldersToMove = getLargeBoulders(
         grid,
         [nX, nY],
@@ -203,46 +179,21 @@ export const exercise2 = (text: string) => {
         instruction
       );
 
-      if (instruction === "<" || instruction === ">")
-        bouldersToMove.forEach(({ left: [lX, lY], right: [rX, rY] }) => {
+      bouldersToMove
+        .sort(sorts[instruction])
+        .forEach(({ left: [lX, lY], right: [rX, rY] }) => {
+          grid.grid[lY][lX] = ".";
+          grid.grid[rY][rX] = ".";
+
           grid.grid[lY + mY][lX + mX] = "[";
           grid.grid[rY + mY][rX + mX] = "]";
         });
-
-      if (instruction === "^") {
-        bouldersToMove
-          .sort(({ right: [aX, aY] }, { right: [bX, bY] }) =>
-            aY > bY ? 1 : -1
-          )
-          .forEach(({ left: [lX, lY], right: [rX, rY] }) => {
-            grid.grid[lY][lX] = ".";
-            grid.grid[rY][rX] = ".";
-
-            grid.grid[lY + mY][lX + mX] = "[";
-            grid.grid[rY + mY][rX + mX] = "]";
-          });
-      }
-
-      if (instruction === "v") {
-        bouldersToMove
-          .sort(({ right: [aX, aY] }, { right: [bX, bY] }) =>
-            aY < bY ? 1 : -1
-          )
-          .forEach(({ left: [lX, lY], right: [rX, rY] }) => {
-            grid.grid[lY][lX] = ".";
-            grid.grid[rY][rX] = ".";
-
-            grid.grid[lY + mY][lX + mX] = "[";
-            grid.grid[rY + mY][rX + mX] = "]";
-          });
-      }
 
       if (bouldersToMove.length !== 0) {
         grid.grid[y][x] = ".";
         grid.grid[nY][nX] = "@";
       }
     }
-    if (nextValue === "#") continue;
 
     if (nextValue === ".") {
       grid.grid[y][x] = ".";
@@ -253,6 +204,7 @@ export const exercise2 = (text: string) => {
   }
 
   const width = grid.grid[0].length;
+
   return grid
     .getAllPoints("[")
     .map(([x, y]) => (x >= width ? [x + 1, y] : [x, y]))

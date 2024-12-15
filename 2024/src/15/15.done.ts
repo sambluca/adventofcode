@@ -326,8 +326,6 @@ describe("exercise2", () => {
   test("data", () => {
     const res = exercise2(data);
 
-    // 1537052 too high
-    // 1535509
     expect(res).toEqual(1535509);
   });
 });
