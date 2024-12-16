@@ -3,50 +3,6 @@ import { Coord, Grid } from "../utils/Grid";
 
 export const parse = (text: string) => text.split(/\n/).map((i) => i.split(""));
 
-const flood = (
-  grid: Grid<string>,
-  [x, y]: Coord,
-  search: string,
-  replaced: Coord[],
-  edges: Set<string>,
-  [prevX, prevY]: Coord,
-  dir?: "north" | "south" | "east" | "west"
-): [Coord[], Set<string>] => {
-  // if we're out of bounds we're at at an edge
-  if (!grid.getInBounds([x, y])) {
-    edges.add(`${search}-${prevX}-${prevY}-${dir}`);
-    return [replaced, edges];
-  }
-
-  // if we've already found the value then we're not hitting an edge
-  if (replaced.find(([rX, rY]) => rX === x && rY === y))
-    return [replaced, edges];
-
-  // if the grid value doesn't equal the value we're searching for we've hit an internal edge
-  if (grid.grid[y][x] !== search) {
-    edges.add(`${search}-${prevX}-${prevY}-${dir}`);
-    return [replaced, edges];
-  }
-
-  replaced.push([x, y]);
-  grid.grid[y][x] = "o";
-  // grid.grid[y][x] = "v";
-
-  const {
-    north: { coord: north },
-    south: { coord: south },
-    west: { coord: west },
-    east: { coord: east },
-  } = grid.getSurroundingValues([x, y]);
-
-  replaced = flood(grid, north, search, replaced, edges, [x, y], "north")[0];
-  replaced = flood(grid, south, search, replaced, edges, [x, y], "south")[0];
-  replaced = flood(grid, west, search, replaced, edges, [x, y], "west")[0];
-  replaced = flood(grid, east, search, replaced, edges, [x, y], "east")[0];
-
-  return [replaced, edges];
-};
-
 const moves: { [key: string]: Coord } = {
   north: [0, -1],
   east: [1, 0],
@@ -56,58 +12,70 @@ const moves: { [key: string]: Coord } = {
 
 const calculateScore = (grid: Grid<string>, start: Coord) => {
   let finalScore = 0;
-
+  let found = false;
   const checks: {
     coord: Coord;
     dir: "north" | "south" | "west" | "east";
     score: number;
+    path: Coord[];
   }[] = [
     {
       coord: start,
       dir: "east",
       score: 0,
+      path: [start],
     },
   ];
   const visited = new Set<string>();
 
+  const paths = new Arr([]);
+
   while (checks.length !== 0) {
-    checks.sort((a, b) => a.score - b.score);
+    // we always want to check whatever the lowest score in the queue
+    checks.sort((a, b) => b.score - a.score);
 
     const {
       coord: [x, y],
       dir,
       score,
-    } = checks.shift()!;
+      path,
+    } = checks.pop()!;
 
-    const key = `${x}-${y}-${dir}`;
-
-    if (grid.getValue([x, y]) === "E") {
+    // if we're at the exit stop looping through. We know it's the lowest score because of the sort we did
+    if (grid.getValue([x, y]) === "E" && !found) {
+      found = true;
       finalScore = score;
+      paths.push(...path.map((i) => JSON.stringify(i)));
       break;
     }
 
-    if (visited.has(key)) continue;
+    // if we've already visited this coord in this direction it's already in the queue
+    if (visited.has(`${x}-${y}-${dir}`)) continue;
 
-    visited.add(key);
+    visited.add(`${x}-${y}-${dir}`);
 
     const [dX, dY] = moves[dir];
     const nX = x + dX;
     const nY = y + dY;
 
+    // if we're not at a wall then that means we can continue moving in this direction
     if (grid.getValue([nX, nY]) !== "#") {
       checks.push({
         coord: [nX, nY],
         dir,
         score: score + 1,
+        path: [...path, [nX, nY]],
       });
     }
 
+    // if we're not at a wall then that means we can continue moving in this direction
     if (dir === "north" || dir === "south") {
-      checks.push({ coord: [x, y], dir: "east", score: score + 1000 });
-      checks.push({ coord: [x, y], dir: "west", score: score + 1000 });
+      checks.push({ coord: [x, y], dir: "east", score: score + 1000, path });
+      checks.push({ coord: [x, y], dir: "west", score: score + 1000, path });
     } else {
-      checks.push({ coord: [x, y], dir: "south", score: score + 1000 });
-      checks.push({ coord: [x, y], dir: "north", score: score + 1000 });
+      // if we're east or west we want to check the north and south values
+      checks.push({ coord: [x, y], dir: "south", score: score + 1000, path });
+      checks.push({ coord: [x, y], dir: "north", score: score + 1000, path });
     }
   }
 
@@ -115,8 +83,6 @@ const calculateScore = (grid: Grid<string>, start: Coord) => {
 };
 
 const getPaths = (grid: Grid<string>, start: Coord, lowestScore: number) => {
-  // let finalScore = 0;
-
   const checks: {
     coord: Coord;
     dir: "north" | "south" | "west" | "east";
@@ -131,11 +97,9 @@ const getPaths = (grid: Grid<string>, start: Coord, lowestScore: number) => {
     },
   ];
   const visited = new Map<string, number>();
-  const paths: Coord[][] = [];
+  const paths = new Arr([]);
 
   while (checks.length !== 0) {
-    checks.sort((a, b) => a.score - b.score);
-
     const {
       coord: [x, y],
       dir,
@@ -143,14 +107,22 @@ const getPaths = (grid: Grid<string>, start: Coord, lowestScore: number) => {
       path,
     } = checks.shift()!;
 
-    const key = `${x}-${y}-${dir}`;
-
+    // if the score is greater than the lowest score then this iteration isn't an optimal path
     if (score > lowestScore) continue;
-    if (visited.has(key) && visited.get(key)! < score) continue;
-    visited.set(key, score);
 
-    if (grid.getValue([x, y]) === "E" && score === lowestScore) {
-      paths.push(path);
+    // if we've already checked this value in this direction AND it has a lower score set to it than the current iteration it's not an optimal path
+    if (
+      visited.has(`${x}-${y}-${dir}`) &&
+      visited.get(`${x}-${y}-${dir}`) < score
+    )
+      continue;
+
+    // when we get to here it means that the current iteration is the lowest score so far for this Coord in this direction so set it
+    visited.set(`${x}-${y}-${dir}`, score);
+
+    // if we're at the exit and the current score is the same as the lowest score then this is an optimal path, add it to the paths array and move on
+    if (grid.getValue([x, y]) === "E" && score <= lowestScore) {
+      paths.push(...path.map((i) => JSON.stringify(i)));
       continue;
     }
 
@@ -158,6 +130,7 @@ const getPaths = (grid: Grid<string>, start: Coord, lowestScore: number) => {
     const nX = x + dX;
     const nY = y + dY;
 
+    // if we're not at a wall then that means we can continue moving in this direction
     if (grid.getValue([nX, nY]) !== "#") {
       checks.push({
         coord: [nX, nY],
@@ -167,16 +140,19 @@ const getPaths = (grid: Grid<string>, start: Coord, lowestScore: number) => {
       });
     }
 
+    // if we're north or south we want to check the east and west values
     if (dir === "north" || dir === "south") {
       checks.push({ coord: [x, y], dir: "east", score: score + 1000, path });
       checks.push({ coord: [x, y], dir: "west", score: score + 1000, path });
     } else {
+      // if we're east or west we want to check the north and south values
+
       checks.push({ coord: [x, y], dir: "south", score: score + 1000, path });
       checks.push({ coord: [x, y], dir: "north", score: score + 1000, path });
     }
   }
 
-  return new Arr(paths.flat()).map((i) => JSON.stringify(i)).unique;
+  return paths.unique.length;
 };
 
 export const exercise1 = (text: string) => {
@@ -188,11 +164,12 @@ export const exercise1 = (text: string) => {
   return calculateScore(grid, start);
 };
 
+// score is the result of exercise 1
 export const exercise2 = (text: string, score: number) => {
   const data = parse(text);
   const grid = new Grid(data);
 
   const start = grid.getPoint("S");
 
-  return getPaths(grid, start, score).length;
+  return getPaths(grid, start, score);
 };

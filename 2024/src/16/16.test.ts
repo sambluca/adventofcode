@@ -32,14 +32,14 @@ describe("exercise1", () => {
 });
 
 describe("exercise2", () => {
-  test.only("mockData", () => {
+  test("mockData", () => {
     const res = exercise2(mockData, exercise1(mockData));
 
     expect(res).toEqual(45);
   });
 
   test("data", () => {
-    const res = exercise2(data, 72400);
+    const res = exercise2(data, exercise1(data));
 
     expect(res).toEqual(435);
   });
