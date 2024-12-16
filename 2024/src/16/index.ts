@@ -63,7 +63,7 @@ const calculateScore = (grid: Grid<string>, start: Coord) => {
       });
     }
 
-    // if we're not at a wall then that means we can continue moving in this direction
+    // if we're north or south we want to check the east and west values
     if (dir === "north" || dir === "south") {
       checks.push({ coord: [x, y], dir: "east", score: score + 1000, path });
       checks.push({ coord: [x, y], dir: "west", score: score + 1000, path });
@@ -105,7 +105,7 @@ const getPaths = (grid: Grid<string>, start: Coord, lowestScore: number) => {
     // if the score is greater than the lowest score then this iteration isn't an optimal path
     if (score > lowestScore) continue;
 
-    // if we've already checked this value in this direction AND it has a lower score set to it than the current iteration it's not an optimal path
+    // if we've already checked this value in this direction AND it has a lower score set to it than the current iteration, then the current iteration's not an optimal path
     if (
       visited.has(`${x}-${y}-${dir}`) &&
       visited.get(`${x}-${y}-${dir}`) < score
@@ -141,7 +141,6 @@ const getPaths = (grid: Grid<string>, start: Coord, lowestScore: number) => {
       checks.push({ coord: [x, y], dir: "west", score: score + 1000, path });
     } else {
       // if we're east or west we want to check the north and south values
-
       checks.push({ coord: [x, y], dir: "south", score: score + 1000, path });
       checks.push({ coord: [x, y], dir: "north", score: score + 1000, path });
     }
