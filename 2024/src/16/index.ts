@@ -12,7 +12,6 @@ const moves: { [key: string]: Coord } = {
 
 const calculateScore = (grid: Grid<string>, start: Coord) => {
   let finalScore = 0;
-  let found = false;
   const checks: {
     coord: Coord;
     dir: "north" | "south" | "west" | "east";
@@ -28,8 +27,6 @@ const calculateScore = (grid: Grid<string>, start: Coord) => {
   ];
   const visited = new Set<string>();
 
-  const paths = new Arr([]);
-
   while (checks.length !== 0) {
     // we always want to check whatever the lowest score in the queue
     checks.sort((a, b) => b.score - a.score);
@@ -42,10 +39,8 @@ const calculateScore = (grid: Grid<string>, start: Coord) => {
     } = checks.pop()!;
 
     // if we're at the exit stop looping through. We know it's the lowest score because of the sort we did
-    if (grid.getValue([x, y]) === "E" && !found) {
-      found = true;
+    if (grid.getValue([x, y]) === "E") {
       finalScore = score;
-      paths.push(...path.map((i) => JSON.stringify(i)));
       break;
     }
 
