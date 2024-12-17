@@ -9,6 +9,7 @@ export class Computer {
   pointer: bigint;
   outputs: string[];
   debugger: string[];
+
   constructor(text: string) {
     const [rs, i] = text.split("\n\n");
 
@@ -72,7 +73,15 @@ export class Computer {
     this.registers.A = value;
     this.increasePointer(2n, "adv", { opcode, operand });
 
-    // this.debugger.push(JSON.stringify({op: 'adv', opcode, operand}))
+    JSON.stringify({
+      instruction: "adv",
+      pointer: this.pointer.toString(),
+      register: Object.entries(this.registers).reduce((acc, [key, value]) => {
+        return { ...acc, [key]: value.toString() };
+      }, {}),
+      opcode: opcode.toString(),
+      operand: operand.toString(),
+    });
   }
 
   bxl({ operand, opcode }: Instruction) {
