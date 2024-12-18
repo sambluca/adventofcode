@@ -62,7 +62,7 @@ describe("exercise2", () => {
     expect(res).toEqual([6, 1]);
   });
 
-  test.only("data", () => {
+  test("data", () => {
     const res = exercise2(data, 70, 1024);
 
     expect(res).toEqual([24, 32]);

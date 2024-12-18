@@ -32,12 +32,10 @@ const calculateScore = (grid: Grid<string>, start: Coord, [eX, eY]: Coord) => {
   let finalScore = -1;
   const checks: {
     coord: Coord;
-    dir: "north" | "south" | "west" | "east";
     score: number;
   }[] = [
     {
       coord: start,
-      dir: "east",
       score: 0,
     },
   ];
@@ -46,7 +44,6 @@ const calculateScore = (grid: Grid<string>, start: Coord, [eX, eY]: Coord) => {
   while (checks.length !== 0) {
     const {
       coord: [x, y],
-      dir,
       score,
     } = checks.pop();
 
@@ -55,33 +52,21 @@ const calculateScore = (grid: Grid<string>, start: Coord, [eX, eY]: Coord) => {
       break;
     }
 
-    if (visited.has(`${x}-${y}-${dir}`)) continue;
+    ["north", "south", "west", "east"].forEach(
+      (move: "north" | "south" | "west" | "east") => {
+        const [dX, dY] = moves[move];
+        const nX = x + dX;
+        const nY = y + dY;
 
-    visited.add(`${x}-${y}-${dir}`);
-
-    const [dX, dY] = moves[dir];
-    const nX = x + dX;
-    const nY = y + dY;
-
-    if (grid.getValue([nX, nY]) !== "#" && grid.getInBounds([nX, nY])) {
-      checks.push({
-        coord: [nX, nY],
-        dir,
-        score: score + 1,
-      });
-    }
-
-    if (grid.getInBounds([x, y])) {
-      Object.keys(moves)
-        .filter((move) => move !== dir)
-        .forEach((move: "north" | "south" | "west" | "east") => {
+        if (grid.getValue([nX, nY]) === "." && !visited.has(`${nX}-${nY}`)) {
+          visited.add(`${nX}-${nY}`);
           checks.push({
-            coord: [x, y],
-            dir: move,
-            score,
+            coord: [nX, nY],
+            score: score + 1,
           });
-        });
-    }
+        }
+      }
+    );
     checks.sort((a, b) => b.score - a.score);
   }
 
@@ -98,7 +83,6 @@ export const exercise2 = (text: string, width: number, bytes: number) => {
   let pathScore = 0;
   let badCoord: Coord = [0, 0];
 
-  // let i = bytes;
   while (pathScore >= 0) {
     badCoord = coords.shift();
     grid.grid[badCoord[1]][badCoord[0]] = "#";
