@@ -29,18 +29,16 @@ const moves: { [key: string]: Coord } = {
 };
 
 const calculateScore = (grid: Grid<string>, start: Coord, [eX, eY]: Coord) => {
-  let finalPaths: Coord[] = [];
+  let finalScore = -1;
   const checks: {
     coord: Coord;
     dir: "north" | "south" | "west" | "east";
     score: number;
-    path: Coord[];
   }[] = [
     {
       coord: start,
       dir: "east",
       score: 0,
-      path: [start],
     },
   ];
   const visited = new Set<string>();
@@ -50,11 +48,10 @@ const calculateScore = (grid: Grid<string>, start: Coord, [eX, eY]: Coord) => {
       coord: [x, y],
       dir,
       score,
-      path,
     } = checks.pop();
 
     if (x === eX && y === eY) {
-      finalPaths = path;
+      finalScore = score;
       break;
     }
 
@@ -71,7 +68,6 @@ const calculateScore = (grid: Grid<string>, start: Coord, [eX, eY]: Coord) => {
         coord: [nX, nY],
         dir,
         score: score + 1,
-        path: [...path, [nX, nY]],
       });
     }
 
@@ -82,15 +78,14 @@ const calculateScore = (grid: Grid<string>, start: Coord, [eX, eY]: Coord) => {
           checks.push({
             coord: [x, y],
             dir: move,
-            score: score + 1,
-            path,
+            score,
           });
         });
     }
     checks.sort((a, b) => b.score - a.score);
   }
 
-  return finalPaths.length - 1;
+  return finalScore;
 };
 
 export const exercise1 = (text: string, width: number, bytes: number) =>
