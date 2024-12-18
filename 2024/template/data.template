@@ -1,1 +1,3 @@
-export const data = ``;
+const fs = require("fs");
+
+export const data = fs.readFileSync("src/REPLACE/data.txt", "utf8")
