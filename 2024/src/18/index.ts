@@ -52,21 +52,19 @@ const calculateScore = (grid: Grid<string>, start: Coord, [eX, eY]: Coord) => {
       break;
     }
 
-    ["north", "south", "west", "east"].forEach(
-      (move: "north" | "south" | "west" | "east") => {
-        const [dX, dY] = moves[move];
-        const nX = x + dX;
-        const nY = y + dY;
+    ["north", "south", "west", "east"].forEach((move) => {
+      const [dX, dY] = moves[move];
+      const nX = x + dX;
+      const nY = y + dY;
 
-        if (grid.getValue([nX, nY]) === "." && !visited.has(`${nX}-${nY}`)) {
-          visited.add(`${nX}-${nY}`);
-          checks.push({
-            coord: [nX, nY],
-            score: score + 1,
-          });
-        }
+      if (grid.getValue([nX, nY]) === "." && !visited.has(`${nX}-${nY}`)) {
+        visited.add(`${nX}-${nY}`);
+        checks.push({
+          coord: [nX, nY],
+          score: score + 1,
+        });
       }
-    );
+    });
     checks.sort((a, b) => b.score - a.score);
   }
 
