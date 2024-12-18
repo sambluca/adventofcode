@@ -24,6 +24,10 @@ export class Grid<V extends string | number> {
     console.log(this.grid.map((i) => i.join("")).join("\n"));
   }
 
+  text() {
+    return this.grid.map((i) => i.join("")).join("\n");
+  }
+
   // copy to clipboard
   copy() {
     var proc = require("child_process").spawn("pbcopy");
