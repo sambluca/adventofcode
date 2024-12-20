@@ -46,7 +46,7 @@ describe("exercise2", () => {
     expect(res).toEqual(285);
   });
 
-  test.skip("data", () => {
+  test("data", () => {
     const res = exercise2(data);
 
     expect(res).toEqual(1015092);

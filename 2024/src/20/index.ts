@@ -1,3 +1,4 @@
+import { makePositive } from "../utils";
 import { Coord, Grid } from "../utils/Grid";
 
 export const parse = (text: string) => text.split(/\n/).map((i) => i.split(""));
@@ -102,49 +103,6 @@ export const exercise1 = (text: string, minSeconds: number = 100) => {
     .reduce((acc: number, [, value]) => acc + value, 0);
 };
 
-const getSecondsSaved = (start: Coord, [eX, eY]: Coord) => {
-  let finalScore = -1;
-  const checks: {
-    coord: Coord;
-    score: number;
-  }[] = [
-    {
-      coord: start,
-      score: 0,
-    },
-  ];
-  const visited = new Set<string>();
-
-  while (checks.length !== 0) {
-    const {
-      coord: [x, y],
-      score,
-    } = checks.pop();
-
-    if (x === eX && y === eY) {
-      finalScore = score;
-      break;
-    }
-
-    ["north", "south", "west", "east"].forEach((move) => {
-      const [dX, dY] = moves[move];
-      const nX = x + dX;
-      const nY = y + dY;
-
-      if (!visited.has(`${nX}-${nY}`)) {
-        visited.add(`${nX}-${nY}`);
-        checks.push({
-          coord: [nX, nY],
-          score: score + 1,
-        });
-      }
-    });
-    checks.sort((a, b) => b.score - a.score);
-  }
-
-  return finalScore;
-};
-
 export const exercise2 = (text: string, minSeconds: number = 100) => {
   const data = parse(text);
   const grid = new Grid(data);
@@ -159,8 +117,6 @@ export const exercise2 = (text: string, minSeconds: number = 100) => {
     paths.map((point, i) => [JSON.stringify(point), i])
   );
 
-  const d = (v: number) => v * 2;
-
   const shorcutCount: { [key: string]: number } = {};
   for (const point of paths) {
     const [x, y] = point;
@@ -172,7 +128,9 @@ export const exercise2 = (text: string, minSeconds: number = 100) => {
       if (value === "." || value === "E") {
         const afterWallStepsFromEnd = steps[JSON.stringify([dX, dY])];
         if (afterWallStepsFromEnd > stepsFromEnd) {
-          const secondsSaved = getSecondsSaved([x, y], [dX, dY]);
+          const fromX = makePositive(x - dX);
+          const fromY = makePositive(y - dY);
+          const secondsSaved = fromX + fromY;
           const savedSteps =
             afterWallStepsFromEnd - stepsFromEnd - secondsSaved;
           if (!shorcutCount[savedSteps]) shorcutCount[savedSteps] = 0;
