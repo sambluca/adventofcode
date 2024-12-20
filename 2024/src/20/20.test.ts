@@ -39,16 +39,16 @@ describe("exercise1", () => {
   });
 });
 
-describe.skip("exercise2", () => {
+describe("exercise2", () => {
   test("mockData", () => {
-    const res = exercise2(mockData);
+    const res = exercise2(mockData, 50);
 
-    expect(res).toEqual();
+    expect(res).toEqual(285);
   });
 
   test.skip("data", () => {
     const res = exercise2(data);
 
-    expect(res).toEqual();
+    expect(res).toEqual(1015092);
   });
 });

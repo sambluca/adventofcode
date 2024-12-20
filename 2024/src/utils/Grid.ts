@@ -102,4 +102,44 @@ export class Grid<V extends string | number> {
       northWest: { value: this.getValue(northWest), coord: northWest },
     };
   }
+
+  getArea([x, y]: Coord, r: number) {
+    const coords: Coord[] = [];
+    let rowLength = 1;
+    for (let radius = r; radius >= 0; radius--) {
+      if (rowLength === 1) {
+        let yTop: Coord = [x, y - radius];
+        let yBottom: Coord = [x, y + radius];
+
+        if (this.getInBounds(yTop)) {
+          coords.push(yTop);
+        }
+        if (this.getInBounds(yBottom)) {
+          coords.push(yBottom);
+        }
+      } else {
+        const additional = rowLength - 1;
+        const xCheck = additional / 2;
+        const leftX = x - xCheck;
+
+        for (let newX = leftX; newX <= x + xCheck; newX++) {
+          const yTop: Coord = [newX, y - radius];
+          if (this.getInBounds(yTop)) {
+            coords.push(yTop);
+          }
+
+          const yBottom: Coord = [newX, y + radius];
+          const duplicate = y + radius === y - radius;
+
+          if (this.getInBounds(yBottom) && !duplicate) {
+            coords.push(yBottom);
+          }
+        }
+      }
+
+      rowLength += 2;
+    }
+
+    return coords.filter(([nX, nY]) => !(nX === x && nY === y));
+  }
 }
