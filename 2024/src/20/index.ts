@@ -10,13 +10,11 @@ const moves: { [key: string]: Coord } = {
   west: [-1, 0],
 };
 
-// needs to be moved to a helper file
 const getMinDistanceAndPath = (
   grid: Grid<string>,
   start: Coord,
   [eX, eY]: Coord
-): [number, Coord[]] => {
-  let finalScore = -1;
+): Coord[] => {
   let finalPaths: Coord[] = [];
   const checks: {
     coord: Coord;
@@ -39,7 +37,6 @@ const getMinDistanceAndPath = (
     } = checks.pop();
 
     if (x === eX && y === eY) {
-      finalScore = score;
       finalPaths = paths;
       break;
     }
@@ -61,86 +58,55 @@ const getMinDistanceAndPath = (
     checks.sort((a, b) => b.score - a.score);
   }
 
-  return [finalScore, finalPaths];
+  return finalPaths;
 };
 
-export const exercise1 = (text: string, minSeconds: number = 100) => {
+export const exercise = (
+  text: string,
+  minSeconds: number = 100,
+  radius: number = 2
+) => {
   const data = parse(text);
   const grid = new Grid(data);
 
   const start = grid.getPoint("S");
   const end = grid.getPoint("E");
 
-  grid.grid[end[1]][end[0]] = ".";
-  const [score, paths] = getMinDistanceAndPath(grid, start, end);
+  const paths = getMinDistanceAndPath(grid, start, end);
 
-  const steps = Object.fromEntries(
+  const secondsToCoord = Object.fromEntries(
     paths.map((point, i) => [JSON.stringify(point), i])
   );
 
-  const d = (v: number) => v * 2;
-
-  const shorcutCount: { [key: string]: number } = {};
+  let count = 0;
   for (const point of paths) {
     const [x, y] = point;
-    const stepsFromEnd = steps[JSON.stringify([x, y])];
-    for (const [dX, dY] of Object.values(moves)) {
-      if (grid.getValue([x + dX, y + dY]) === "#") {
-        const afterWall = [x + d(dX), y + d(dY)] as Coord;
-        const afterWallStepsFromEnd =
-          steps[JSON.stringify([afterWall[0], afterWall[1]])];
-        const savedSteps = afterWallStepsFromEnd - stepsFromEnd - 2;
-
-        if (!shorcutCount[savedSteps]) shorcutCount[savedSteps] = 0;
-
-        shorcutCount[savedSteps]++;
-      }
-    }
-  }
-
-  return Object.entries(shorcutCount)
-    .filter(([key]) => Number(key) > 0 && Number(key) >= minSeconds)
-    .reduce((acc: number, [, value]) => acc + value, 0);
-};
-
-export const exercise2 = (text: string, minSeconds: number = 100) => {
-  const data = parse(text);
-  const grid = new Grid(data);
-
-  const start = grid.getPoint("S");
-  const end = grid.getPoint("E");
-
-  grid.grid[end[1]][end[0]] = ".";
-  const [score, paths] = getMinDistanceAndPath(grid, start, end);
-
-  const steps = Object.fromEntries(
-    paths.map((point, i) => [JSON.stringify(point), i])
-  );
-
-  const shorcutCount: { [key: string]: number } = {};
-  for (const point of paths) {
-    const [x, y] = point;
-    const stepsFromEnd = steps[JSON.stringify([x, y])];
-    const validCheats = grid.getArea([x, y], 20);
+    const secondsFromEnd = secondsToCoord[JSON.stringify([x, y])];
+    const validCheats = grid.getArea([x, y], radius);
 
     for (const [dX, dY] of validCheats) {
       const value = grid.getValue([dX, dY]);
       if (value === "." || value === "E") {
-        const afterWallStepsFromEnd = steps[JSON.stringify([dX, dY])];
-        if (afterWallStepsFromEnd > stepsFromEnd) {
+        const afterWallSecondsFromEnd =
+          secondsToCoord[JSON.stringify([dX, dY])];
+        // if we're further along in the path then we want to do more checks
+        if (afterWallSecondsFromEnd > secondsFromEnd) {
           const fromX = makePositive(x - dX);
           const fromY = makePositive(y - dY);
-          const secondsSaved = fromX + fromY;
-          const savedSteps =
-            afterWallStepsFromEnd - stepsFromEnd - secondsSaved;
-          if (!shorcutCount[savedSteps]) shorcutCount[savedSteps] = 0;
-          shorcutCount[savedSteps]++;
+
+          // secondsCheated is how many seconds it took to get from x,y to dX,dY
+          const secondsCheated = fromX + fromY;
+
+          const savedSeconds =
+            afterWallSecondsFromEnd - (secondsFromEnd + secondsCheated);
+
+          if (savedSeconds > 0 && savedSeconds >= minSeconds) {
+            count += 1;
+          }
         }
       }
     }
   }
 
-  return Object.entries(shorcutCount)
-    .filter(([key]) => Number(key) > 0 && Number(key) >= minSeconds)
-    .reduce((acc: number, [, value]) => acc + value, 0);
+  return count;
 };

@@ -1,4 +1,4 @@
-import { exercise1, parse, exercise2 } from ".";
+import { parse, exercise } from ".";
 import { data } from "./data";
 
 const mockData = `###############
@@ -27,13 +27,13 @@ describe("parse", () => {
 
 describe("exercise1", () => {
   test("mockData", () => {
-    const res = exercise1(mockData, 2);
+    const res = exercise(mockData, 2, 2);
 
     expect(res).toEqual(44);
   });
 
   test("data", () => {
-    const res = exercise1(data);
+    const res = exercise(data);
 
     expect(res).toEqual(1387);
   });
@@ -41,13 +41,13 @@ describe("exercise1", () => {
 
 describe("exercise2", () => {
   test("mockData", () => {
-    const res = exercise2(mockData, 50);
+    const res = exercise(mockData, 50, 20);
 
     expect(res).toEqual(285);
   });
 
   test("data", () => {
-    const res = exercise2(data);
+    const res = exercise(data, 100, 20);
 
     expect(res).toEqual(1015092);
   });
