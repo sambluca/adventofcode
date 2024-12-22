@@ -1,29 +1,4 @@
-import { copy, findDiffs, getDiff } from "../utils";
-
-// const toObject = (obj: any) => {
-//   return JSON.parse(
-//     JSON.stringify(
-//       obj,
-//       (key, value) => (typeof value === "bigint" ? value.toString() : value) // return everything else unchanged
-//     )
-//   );
-// };
-
-// function memoize<Args extends unknown[], Result>(
-//   func: (...args: Args) => Result
-// ): (...args: Args) => Result {
-//   const stored = new Map<string, Result>();
-
-//   return (...args) => {
-//     const key = JSON.stringify(toObject(args));
-//     if (stored.has(key)) {
-//       return stored.get(key)!;
-//     }
-//     const result = func(...args);
-//     stored.set(key, result);
-//     return result;
-//   };
-// }
+import { findDiffs } from "../utils";
 
 const mix = (a: bigint, b: bigint) => BigInt(a) ^ BigInt(b);
 
@@ -77,13 +52,7 @@ export const exercise2 = (text: string) => {
     const numberCheck: { [key: string]: number } = {};
     for (let diffI = 0; diffI <= diffs.length; diffI++) {
       if (diffI + 4 > diffs.length) break;
-
-      const firstDiff = diffs[diffI];
-      const secondDiff = diffs[diffI + 1];
-      const thirdDiff = diffs[diffI + 2];
-      const fourthDiff = diffs[diffI + 3];
-
-      const stringy = [firstDiff, secondDiff, thirdDiff, fourthDiff].join("");
+      const stringy = diffs.slice(diffI, diffI + 4).join("");
 
       if (!numberCheck[stringy]) {
         const digit = digits[diffI + 3];
