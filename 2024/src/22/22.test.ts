@@ -28,16 +28,20 @@ describe("exercise1", () => {
   });
 });
 
-describe.only("exercise2", () => {
-  test("mockData", () => {
-    const res = exercise2(mockData);
+describe("exercise2", () => {
+  const mockData2 = `1
+2
+3
+2024`;
 
+  test("mockData", () => {
+    const res = exercise2(mockData2);
     expect(res).toEqual(23);
   });
 
   test.skip("data", () => {
     const res = exercise2(data);
 
-    expect(res).toEqual();
+    expect(res).toEqual(1690);
   });
 });
