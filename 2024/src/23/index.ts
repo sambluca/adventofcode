@@ -19,11 +19,55 @@ const startsWith = (i: string) =>
     .split("-")
     .reduce((acc: boolean, c) => (acc ? acc : c.startsWith("t")), false);
 
+// https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm
+// algorithm BronKerbosch1(R, P, X) is
+//     if P and X are both empty then
+//         report R as a maximal clique
+//     for each vertex v in P do
+//         BronKerbosch1(R ⋃ {v}, P ⋂ N(v), X ⋂ N(v))
+//         P := P \ {v}
+//         X := X ⋃ {v}
+
+// clique: Set<string> = R,
+// options: Set<string> = P,
+// excluded: Set<string> = X,
+const bronKerbosch = (
+  clique: Set<string>,
+  options: Set<string>,
+  excluded: Set<string>,
+  graph: { [key: string]: Set<string> },
+  cliques: string[]
+) => {
+  if (options.size === 0 && excluded.size === 0) {
+    cliques.push(Array.from(clique).sort().join(","));
+    return cliques;
+  }
+
+  const arr = Array.from(options);
+  for (const vertex of arr) {
+    clique.add(vertex);
+    const neighbors = graph[vertex] || new Set();
+
+    cliques = [
+      ...bronKerbosch(
+        clique,
+        new Set([...options].filter((v) => neighbors.has(v))),
+        new Set([...excluded].filter((v) => neighbors.has(v))),
+        graph,
+        cliques
+      ),
+    ];
+    clique.delete(vertex);
+    options.delete(vertex);
+    excluded.add(vertex);
+  }
+
+  return cliques;
+};
+
 export const exercise1 = (text: string) => {
   const connections = parse(text);
-
   const visited = new Set<string>();
-
   Object.entries(connections).forEach(([first, set]) => {
     const connected = Array.from(set);
     while (connected.length !== 0) {
@@ -53,61 +97,18 @@ export const exercise1 = (text: string) => {
   return visited.size;
 };
 
-// https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm
-// algorithm BronKerbosch1(R, P, X) is
-//     if P and X are both empty then
-//         report R as a maximal clique
-//     for each vertex v in P do
-//         BronKerbosch1(R ⋃ {v}, P ⋂ N(v), X ⋂ N(v))
-//         P := P \ {v}
-//         X := X ⋃ {v}
-
-// clique: Set<string> = R,
-// options: Set<string> = P,
-// excluded: Set<string> = X,
-
-const bronKerbosch = (
-  clique: Set<string>,
-  options: Set<string>,
-  excluded: Set<string>,
-  graph: { [key: string]: Set<string> },
-  maxClique: Set<string>
-) => {
-  if (options.size === 0 && excluded.size === 0) {
-    if (clique.size > maxClique.size) {
-      maxClique.clear();
-      clique.forEach((node) => maxClique.add(node));
-    }
-    return;
-  }
-
-  const arr = Array.from(options);
-  for (const vertex of arr) {
-    clique.add(vertex);
-    const neighbors = graph[vertex] || new Set();
-
-    bronKerbosch(
-      clique,
-      new Set([...options].filter((v) => neighbors.has(v))),
-      new Set([...excluded].filter((v) => neighbors.has(v))),
-      graph,
-      maxClique
-    );
-    clique.delete(vertex);
-    options.delete(vertex);
-    excluded.add(vertex);
-  }
-};
-
 export const exercise2 = (text: string) => {
   const data = parse(text);
-  const maxClique = new Set<string>();
-  bronKerbosch(
+  const cliques = bronKerbosch(
     new Set(),
     new Set(Object.keys(data)),
     new Set(),
     data,
-    maxClique
+    []
   );
-  return Array.from(maxClique).sort().join(",");
+
+  return cliques.reduce(
+    (acc: string, item) => (item.length > acc.length ? item : acc),
+    ""
+  );
 };
