@@ -56,16 +56,16 @@ describe("exercise1", () => {
   });
 });
 
-describe.skip("exercise2", () => {
+describe.only("exercise2", () => {
   test("mockData", () => {
     const res = exercise2(mockData);
 
-    expect(res).toEqual();
+    expect(res).toEqual("co,de,ka,ta");
   });
 
-  test.skip("data", () => {
+  test("data", () => {
     const res = exercise2(data);
 
-    expect(res).toEqual();
+    expect(res).toEqual("az,cj,kp,lm,lt,nj,rf,rx,sn,ty,ui,wp,zo");
   });
 });
