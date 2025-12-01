@@ -1,0 +1,9 @@
+export const parse = (text: string) => text.split(/\n/);
+
+export const exercise1 = (text: string) => {
+  const data = parse(text);
+};
+
+export const exercise2 = (text: string) => {
+  const data = parse(text);
+};
