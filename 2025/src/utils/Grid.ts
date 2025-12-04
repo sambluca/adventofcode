@@ -103,6 +103,29 @@ export class Grid<V extends string | number> {
     };
   }
 
+  getBaseSurroundingValues([x, y]: Coord): Array<V> {
+    const north: Coord = [x, y - 1];
+    const east: Coord = [x + 1, y];
+    const south: Coord = [x, y + 1];
+    const west: Coord = [x - 1, y];
+
+    const northEast: Coord = [x + 1, y - 1];
+    const southEast: Coord = [x + 1, y + 1];
+    const southWest: Coord = [x - 1, y + 1];
+    const northWest: Coord = [x - 1, y - 1];
+
+    return [
+      this.getValue(north),
+      this.getValue(northEast),
+      this.getValue(east),
+      this.getValue(southEast),
+      this.getValue(south),
+      this.getValue(southWest),
+      this.getValue(west),
+      this.getValue(northWest),
+    ];
+  }
+
   getArea([x, y]: Coord, r: number) {
     const coords: Coord[] = [];
     let rowLength = 1;

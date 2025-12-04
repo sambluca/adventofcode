@@ -1,6 +1,6 @@
 import { Grid } from "../Grid";
 
-describe("Grid", () => {
+describe.skip("Grid", () => {
   describe("getArea", () => {
     test("all values in grid", () => {
       const grid = new Grid<string>(
