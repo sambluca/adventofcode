@@ -79,7 +79,7 @@ export class Arr extends Array {
   }
 
   // rotates a 2D array clockwise by default, anticlockwise with a prop
-  rotate(props?: { dir?: "clockwise" | "anticlockwise" }) {
+  rotate(props?: { dir?: "clockwise" | "anticlockwise" }): Array<any> {
     if (props && props.dir && props.dir === "anticlockwise") {
       return this[0].map((val, index) =>
         this.map((row) => row[row.length - 1 - index])
